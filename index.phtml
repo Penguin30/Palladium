@@ -1,0 +1,616 @@
+<style>
+.overoff {
+	overflow: none;
+}
+.alert-danger {
+    background-color: #f2dede;
+    border-color: #ebccd1;
+    color: #a94442;
+}
+.alert {
+    border: 1px solid transparent;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    padding: 15px;
+}
+td #cart-next-btn {
+  float:none;
+  padding:5px;
+  font-size:16px;
+  font-weight:bold;
+  cursor:pointer;
+  display:block;
+  margin:0 auto;
+};
+button.hid {
+  float: none;
+  padding: 5px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  display: none;
+  margin: 0 auto;
+}
+
+ .bg_form {
+ 	vertical-align: center;
+	top: 0;
+	left: 0;
+	position: fixed;
+	background-color: rgba(0,0,0, .6);
+	z-index: 1;
+}
+
+
+
+.formik {
+	width: 100%;
+	position: relative;
+    background-color: #fff;
+    vertical-align: center;
+    margin: 0 auto;
+    margin-top: 7%;
+    height: auto;
+    padding: 15px 0;
+}
+
+.formik .close_popup{
+	position: absolute;
+	right: 0;
+	top: 0;
+	padding: 5px 7px;
+	text-align: right;
+	cursor: pointer;
+}
+.formik h2{
+	margin-bottom: 20px;
+margin-bottom: 20px;
+    text-align: center;
+}
+
+.formik .form_elements{
+	margin:5px 0px;
+	width: 93%;
+}
+
+.formik .col-left{
+    display: inline-block;
+    width: 47%;
+    margin: 0 1% 0 2%;
+    float: left;
+}
+.formik .col-right{
+	display: inline-block;
+	width: 47%;
+	margin:0 2% 0 1%;
+	float:right;
+}
+.formik .col-full{
+	display: inline-block;
+	width: 96%;
+	margin:0 2%;
+}
+
+
+@-moz-document url-prefix() {
+	.formik { padding-bottom: 40px;}
+}
+.vote_zakaz {
+	width: 100%;
+	background-color: #222;
+}
+.but_off {
+	text-decoration: none;
+	float: right;
+	padding: 5px 24px;
+	margin-right: 18px;
+	color: #000;
+}
+.but_off:hover {
+	color: #000;
+	text-decoration: none;
+}
+
+.cursor_s, .cursor_s:hover {
+	text-decoration: none;
+}
+.blue { color: #1c99e8; text-decoration: none; border-bottom: dashed 1px #1c99e8; margin-left: 5px; }
+.blue:hover { color: #1c99e8 !important;  text-decoration: none; border: none; }
+</style>
+
+<?php $curnames = Register::get('currenciesNames');?>
+<!-- .requere -->
+<div class="main">
+	<h1 class="uppercase">Корзина</h1>
+	<div class="breadcrumbs bottom-20"><?=$bread?></div>
+	<?php /*?><div class="h3 t-center" style="padding: 15px 5px; color: green;">
+		<span class="err">*</span>
+		Цены постоянно теряют свою актуальность из-за курса валют,
+		поэтому корзина очищается автоматически через 48 часов!
+	</div>*/?>
+
+	<?php if (isset($data) && count($data)>0){?>
+		<?php
+		//die(var_dump($data));
+			$money = array();
+			$no_money = array();
+			foreach ($data as $item) {
+				if($item['is_entity']) {
+					$no_money[] = $item;
+				} else {
+					$money[] = $item;
+				}
+			}
+
+			$arr = array();
+			if(count($money) > 0) {
+				//$arr['money'] = $money;
+				//if(count($money) > 1) {
+					//$arr['money'] = array();
+					foreach ($money as $key => $value) {
+						if($value['merchant_id'] == '') {
+							$arr['without'][] = $value;
+						} else {
+							$arr[$value['merchant_id']][] = $value;
+						}
+
+					}
+				//}
+			}
+			if(count($no_money) > 0) {
+				$arr['no_money'] = $no_money;
+			}
+			//die(var_dump($arr));
+		?>
+
+		<?php foreach ($arr as $key => $items) { ?>
+		<form id="last-form" action="<?=HTTP_ROOT?>/cart/send/" method="POST" name="ff" class="cart_form_<?=$key?>">
+
+			<p class="t-right"><b class="btn" onclick="alert('Срок поставки и кол-во предложений может меняться на момент заказа.');">Цены в корзине актуальны: 24 часа</b></p>
+			<table width="100%" class="cart-form">
+				<tr>
+					<td class="g-hide" style="text-align: center; width: 30px;">
+						<input type="checkbox" id="order-all" checked/><br/>
+						<b>В&nbsp;заказ</b>
+					</td>
+					<td colspan="2"><b>Бренд</b></td>
+					<td><b>Артикул</b></td>
+					<!-- <td><b>Партнер</b></td> -->
+					<td class="g-hide"><b>Наименование</b></td>
+					<td class="g-hide"><b>Прим.</b></td>
+					<td class="g-hide"><b>Срок поставки</b></td>
+					<td style="text-align: center; width: 100px;"><b>Цена (<?=$curnames[$curExchangeTypeMain]?>)</b></td>
+					<td style="text-align: center; width: 50px;"><b>Кол-во</b></td>
+					<td style="text-align: center; width: 100px;"><b>Сумма (<?=$curnames[$curExchangeTypeMain]?>)</b></td>
+					<td style="text-align: center; width: 30px;">
+						<input type="checkbox" id="delete-all"/><br/>
+						<b>Удалить</b>
+					</td>
+				</tr>
+				<?php $sum=$sum_blr=$i=0;?>
+				<?php //var_dump($items);?>
+				<?php foreach ($items as $element){?>
+				<?php
+					if ($_cart_ordersIds)
+					{
+						if (in_array($element['id'], $_cart_ordersIds))
+						{
+							$sum += ($element['cc']*$element['price']);
+						}
+					}
+					else
+						$sum += ($element['cc']*$element['price']);
+				?>
+				<tr bgcolor="<?=($i%2)?'#f1f1f1':'';?>">
+					<td class="g-hide" style="text-align: center;">
+						<input type="checkbox" name="orderIds[]" value="<?=$element['id']?>" class="setorder"
+						<?=($_cart_ordersIds)?(in_array($element['id'], $_cart_ordersIds)?'checked':''):'checked'?> />
+					</td>
+					<td colspan="2"><b><?=$element['brand']?></b></td>
+					<td><b><?=$element['name']?></b></td>
+					<!-- <td><b><?=$element['partner']?></b></td> -->
+					<td class="g-hide"><?=$element['descr']?></td>
+					<td class="g-hide">
+						<a href="#acomment-<?=$element['id']?>" class="acomment" style="font-size: 16px; text-decoration: none;"><i class="icon-tags"></i></a>
+						<div class="no-display">
+							<div id="acomment-<?=$element['id']?>" style="width: 500px; padding: 10px;">
+								<b><?=$element['brand']?> :: <?=$element['name']?> :: <?=$element['descr']?></b><br/>
+
+								Комментарий для менеджера:<br/>
+								<textarea class="form_elements" name="setdescr[<?=$element['id']?>]" style="width: 97%; height: 80px;"><?=$element['status_descr']?></textarea>
+
+								Для архива:<br/>
+								<textarea class="form_elements" name="setsold[<?=$element['id']?>]" style="width: 97%; height: 80px;"><?=$element['sold']?></textarea>
+
+								<div class="clear"></div>
+								<a href="#" class="btn fclose top-10" comment-id="<?=$element['id']?>">Ок</a>
+							</div>
+						</div>
+					</td>
+					<td class="g-hide"><?=$element['time_delivery_descr']?> (д)</td>
+					<td style="text-align: center;">
+
+						<?php if ($element['price']>0){?>
+    						<b><?=PriceHelper::number($element['price'])?> <?=$curnames[$curExchangeTypeMain]?></b>
+
+    						<?php if ($element['price_change'] == 1){?>
+    						<div class="alert alert-danger" style="font-weight: bold; line-height: 10px; padding: 2px;">
+    							<i class="fa fa-bell-o" aria-hidden="true" alt="Внимание! Поменялась цена!" title="Внимание! Поменялась цена!"></i>
+    							Обновлена цена!
+    						</div>
+    						<?php }?>
+
+						<?php }else{?>
+							<a href="/search/number/?article=<?=$element['name']?>&searchbrand=<?=$element['brand']?>" class="btn">Перезаказать</a>
+							<div class="alert alert-danger" style="font-weight: bold; line-height: 10px; padding: 2px;">
+    							<i class="fa fa-bell-o" aria-hidden="true" alt="Внимание! Поменялась цена!" title="Внимание! Поменялась цена!"></i>
+    							Обновлена цена!
+    						</div>
+						<?php }?>
+
+					</td>
+					<td style="text-align: center;">
+						<input type="hidden" name="min_<?=$element['id']?>" id="min_<?=$element['id']?>" value="<?=($element['min']?$element['min']:1)?>">
+						<input type="hidden" name="set_price_<?=$element['id']?>" id="set_price_<?=$element['id']?>" value="<?=trim($element['price'])?>">
+						<input onkeyup="set_pp(<?=$element['id']?>);" onkeydown="set_pp(<?=$element['id']?>);" onchange="set_pp(<?=$element['id']?>);" id="count_<?=$element['id']?>" size="2" type="text" name="count[<?=$element['id']?>]" value="<?=$element['cc']?>" class="f-left count_item_cart" />
+					</td>
+					<td style="text-align: center;"><span id="new_pp_<?=$element['id']?>"><?=PriceHelper::number($element['cc']*$element['price'])?></span> <?=$curnames[$curExchangeTypeMain]?></td>
+					<td style="text-align: center;"><input type="checkbox" name="delete[]" value="<?=$element['id']?>" class="setdel"/></td>
+				</tr>
+
+				<?php }?>
+
+				<?php if ($set_delivery['price']){?>
+				<?php $sum = $sum+PriceHelper::rate($set_delivery['price']);?>
+				<tr>
+					<td class="g-hide"></td>
+					<td></td>
+					<td></td>
+					<td class="g-hide"></td>
+					<td class="g-hide"></td>
+					<td class="g-hide"></td>
+					<td></td>
+
+					<td class="t-right"><b>Доставка:</b></td>
+					<td style="text-align: center;"><span><?=PriceHelper::number(PriceHelper::rate($set_delivery['price']))?></span> <?=$curnames[$curExchangeTypeMain]?></td>
+					<td></td>
+				</tr>
+				<?php }?>
+
+				<tr>
+					<td class="g-hide"></td>
+					<td></td>
+					<td></td>
+					<td class="g-hide"></td>
+					<td class="g-hide"></td>
+					<td class="g-hide"></td>
+					<td></td>
+					<td class="t-right"><b>Итого:</b></td>
+					<td style="text-align: center;"><span id="new_sum"><?=PriceHelper::number($sum)?></span> <?=$curnames[$curExchangeTypeMain]?></td>
+					<td style="text-align: center;" colspan="2" class="delete_but"><button type="submit" name="operation" value="delete" class="custom-button " style="float: none; width: 150px;  background: red; color: #fff;"><span><i class="icon-remove"></i> Удалить</span></button></td>
+				</tr>
+				<tr>
+					<td class="g-hide"></td>
+					<td></td>
+					<td></td>
+					<td class="g-hide"></td>
+					<td class="g-hide"></td>
+					<td class="g-hide"></td>
+					<td></td>
+					<td class="t-right"></td>
+					<td style="text-align: center;"></td>
+					<td style="text-align: center; cursor: pointer;" colspan="2"><button type="button" title="Печать" id="print-cart" class="custom-button gradient" style="float: none; width: 150px;"><span><i class="icon-print"></i> Печать</span></button></td>
+				</tr>
+				<tr>
+					<td class="g-hide"></td>
+					<td></td>
+					<td></td>
+					<td class="g-hide"></td>
+					<td class="g-hide"></td>
+					<td class="g-hide"></td>
+					<td></td>
+					<td class="t-right"></td>
+					<td style="text-align: center;"></td>
+					<td style="text-align: center; cursor: pointer;" colspan="2"><button type="submit" name="operation" value="export" class="custom-button gradient" style="float: none; width: 150px;"><span><i class="fa fa-file-excel-o" aria-hidden="true"></i> Экспорт</span></button></td>
+				</tr>
+			</table>
+			<div class="vote_zakaz" id="vote_zakaz_<?=$key ?>">
+				<a class="custom-button gradient but_off" onclick="ga('send', 'event', 'cart', 'step1'); $(function() {
+					$('html').css('overflow', 'hidden'); set_req();
+					$('#bg_form_<?=$key ?>').fadeIn('300');
+					});" style="margin-bottom: 20px; margin-top: 5px; color: #fff; background: linear-gradient(to bottom, #4e5295 0%, #1d185d 100%); cursor: pointer;" >Оформить заказ</a>
+			</div>
+			<br><br><br>
+			<br><br>
+
+
+			<div class="bg_form" style="display: none;" id="bg_form_<?=$key ?>">
+			<div class="formik row">
+
+				<div class="close_popup" onclick="remove_req();">Закрыть</div>
+				<h2>Оформление заказа</h2>
+
+				<div class="col-left">
+
+					<b style="display: inline-block; width: 180px;">Контактные данные</b>
+
+					<input placeholder="Фамилия" type="text" name="form[name]" id="form_name" class="form_elements" value="<?=(isset($error_data)&&!empty($error_data['name']))?$error_data['name']:((isset($account['name'])&&!empty($account['name']))?$account['name']:'');?>"/>
+					<br/><span class="msg-error" id="form_name_err"></span>
+					<input placeholder="Имя" type="text" name="form[name2]" id="form_name2" class="form_elements" value="<?=(isset($error_data)&&!empty($error_data['name2']))?$error_data['name2']:((isset($account['name2'])&&!empty($account['name2']))?$account['name2']:'');?>"/>
+					<br/><span class="msg-error" id="form_name2_err"></span>
+					<input placeholder="Отчество" type="text" name="form[name3]" id="form_name3" class="form_elements" value="<?=(isset($error_data)&&!empty($error_data['name3']))?$error_data['name3']:((isset($account['name3'])&&!empty($account['name3']))?$account['name3']:'');?>"/>
+					<br/><span class="msg-error" id="form_name3_err"></span>
+
+					<table width="100%">
+					<tr>
+						<td>
+							<input   placeholder="Телефон для связи" type="text" name="form[phone]" id="form_phones" class="form_elements" value="<?=((isset($account['phones'])&&!empty($account['phones'])&&$account['phones']!='+380')?$account['phones']:'')?>"/>
+						</td>
+						<td style="width: 120px; vertical-align: middle; text-align: center;">
+						</td>
+					</tr>
+					</table>
+					<span class="msg-error" id="form_phone_err"></span>
+
+					<input placeholder="Ваш e-mail" type="text" name="form[email]" id="form_email" class="form_elements" value="<?=(isset($error_data)&&!empty($error_data['email']))?$error_data['email']:((isset($account['email'])&&!empty($account['email']))?$account['email']:'');?>"/>
+					<br/><span class="msg-error" id="form_email_err"></span>
+
+					<textarea placeholder="Комментарий" name="form[message]" id="form_message" class="form_elements"><?=(isset($error_data)&&!empty($error_data['message']))?$error_data['message']:''?></textarea>
+					<br/><span class="msg-error" id="form_message_err"></span>
+
+
+
+				</div>
+
+
+				<div class="col-right">
+
+					<?php if (isset($merchants_list) && count($merchants_list)>0){?>
+						<b style="display: inline-block; width: 180px;">Выберите вариант оплаты<?=$partner['is_entity']?></b>
+						<select style="width: 73%;" name="merchant_type" id="a-merchant_type" placeholder="Доставка" class="form_elements">
+
+						<?php $p=0; foreach ($merchants_list as $dd){ $p++;?>
+
+						<?php if(($key == 'no_money' && $dd['mcode'] != 'WITHOUT_MONEY') || ($key != 'no_money' && $dd['mcode'] == 'WITHOUT_MONEY')) continue;?>
+
+						<option value="<?=$dd['mcode']?>" <?=(isset($checked_payment) && $checked_payment == $dd['mcode'])?'selected="selected"':(($p == 1)?'selected="selected"':'');?>>
+							<?=$dd['name']?>
+						</option>
+						<?php }?>
+						</select>
+						<a href="#" id="descr-merchant" class="blue">подробнее</a>
+					<?php }?>
+
+					<?php if (isset($deliveries) && count($deliveries)>0){?>
+						<b style="display: inline-block; width: 180px;">Выберите доставку</b>
+						<select style="width: 73%;" name="delivery" id="a-delivery" placeholder="Способы оплат" class="form_elements">
+						<?php foreach ($deliveries as $dd){?>
+						<option value="<?=$dd['id']?>" <?=($set_delivery['id']==$dd['id']?'selected="selected"':'')?>>
+							<?=$dd['name']?> (<? if(PriceHelper::number(PriceHelper::rate($dd['price']))==''){ echo $dd['price']; }else{ echo PriceHelper::number(PriceHelper::rate($dd['price'])).' '.$curnames[$curExchangeTypeMain]; }     ?>)
+						</option>
+						<?php }?>
+						</select>
+						<a href="#" id="descr-delivery" class="blue">подробнее</a>
+					<?php }?>
+
+
+					<div class="zruchna" style="display:none;">
+						<label><input name="zruchna_type" type="radio" value="02" checked> До двери</label>  <label><input name="zruchna_type" type="radio" value="01"> В почтомат</label>
+
+						<select name="zruchna_city" id="zruchna_city" placeholder="Выберите город" class="form_elements">
+						<?php
+
+							$citys_file = file_get_contents('http://api.zruchna.ua/API/json/Citys.json');
+							$citys = json_decode($citys_file, true);
+
+							$keys=array();
+							foreach($citys as $key=>$arr){ $keys[$key]=$arr['name_ru']; }
+							array_multisort($keys, SORT_STRING, $citys);
+
+							$allowed_citіes = ['Киев','Харьков','Львов','Днепр','Запорожье'];
+
+							foreach($citys as $city){
+								if(in_array($city['name_ru'], $allowed_citіes)){
+									echo '<option value="'.$city['code'].'" >'.$city['name_ru'].'</option>';
+								}
+							}
+
+						?>
+						</select>
+
+						<select name="zruchna_postomat" id="zruchna_postomat" placeholder="Выберите почтамт" class="form_elements">
+						<?php
+
+							$postomats_file = file_get_contents('http://api.zruchna.ua/API/json/Postomat.json');
+							$postomats = json_decode($postomats_file, true);
+
+							$keys=array();
+							foreach($postomats as $key=>$arr){ $keys[$key]=$arr['name_ru']; }
+							array_multisort($keys, SORT_STRING, $postomats);
+
+							foreach($postomats as $key=>$postomat){
+								echo '<option class="'.$postomat['city'].'" value="'.$postomat['code'].'" >'.$postomat['name_ru'].'</option>';
+							}
+
+						?>
+						</select>
+
+					</div>
+
+
+
+					<?php if (!$set_delivery['disable_address_area']){?>
+
+                        <?php   ?>
+                    <style>
+                        .form_address td {
+                            padding: 5px 10px 5px 0;
+                        }
+                        .form_address .chosen-container-single .chosen-single {
+                            height: 30px;
+                        }
+                    </style>
+                    <table class="form_address">
+                        <tr><td style="min-width: 165px;">
+                                <?php if (count($countries)>0){?>
+                                    <select style="width: 100%;" required name="form[country]" id="country" class="form-controll">
+                                        <option value="">Страна</option>
+                                        <?php foreach ($countries as $country){ ?>
+                                            <option value="<?=$country['id']?>" <?=($country_set && $country_set == $country['id'])?'selected':''?>><?=$country['name']?></option>
+                                        <?php } ?>
+                                    </select>
+                                <?php } ?>
+                                <p class="msg-error" id="country_err"></p>
+                            </td><td style="min-width: 165px;">
+                                <select data-placeholder="Область/Регион" name="form[area]" id="area" class="form-controll" >
+                                	<option value="">Область/Регион</option>
+                                    <?php if($area_list){ ?>
+                                        <?php foreach ($area_list as $area){ ?>
+                                            <option value="<?=$area['id']?>"><?=$area['name']?></option>
+                                        <?php } ?>
+                                    <?php } ?>
+                                </select>
+                                <p class="msg-error" id="area_err"></p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="min-width: 165px;">
+                                <select style="width: 100%;" name="form[city]" id="city" class="form-controll" onclick="otherSelected(this);">
+                                    <option value="">Город</option>
+                                </select>
+                                <p class="msg-error" id="city_err"></p>
+                            </td>
+                            <td>
+                                <input name="form[other_city]" id="other_city" placeholder="Другой город" />
+                            </td>
+                        </tr>
+                    </table>
+                        <?php ?>
+                        <textarea placeholder="Адрес доставки" name="form[address]" id="form_address" class="form_elements"><?=(isset($error_data)&&!empty($error_data['address']))?$error_data['address']:((isset($account['address'])&&!empty($account['address']))?$account['address']:'');?></textarea>
+                        <br/><span class="msg-error" id="form_address_err"></span>
+
+                    <?php }?>
+
+
+					<div class="zruchna" style="display:none;">
+
+						<b style="display: inline-block; width: 180px;">Дата и время доставки</b>
+
+						<input type="text" name="zruchna_deliverydate" id="zruchna_deliverydate" class="form_elements" value="<?php $d = strtotime("+1 day"); echo date("d.m.Y", $d) ?>" />
+
+						<select name="zruchna_deliverytime" id="zruchna_deliverytime" class="form_elements">
+							<?php
+								$WindowsTime = file_get_contents('http://api.zruchna.ua/API/json/WindowsTime.json');
+								$list = json_decode($WindowsTime, true);
+
+								$keys=array();
+								foreach($list as $key=>$arr){ $keys[$key]=$arr['name_ru']; }
+								array_multisort($keys, SORT_STRING, $list);
+
+								foreach($list as $item){
+									if($item['TypeOfTimeWindowLikeDelivery'] == '1' and $item['code'] <= '000000004'){
+										echo '<option value="'.$item['code'].'" >'.$item['name_ru'].' ('.$item['time'].')</option>';
+									}
+								}
+							?>
+						</select>
+
+
+					</div>
+
+				</div>
+
+
+
+				<div class="col-full table-cart-buttons">
+
+						<input type="checkbox" value="1" name="form[agree_check_items]" id="is_agree_check_items" />
+						<a style="margin-bottom: 5px; display: inline-block;" href="#" onclick="alert('просим указать VIN автомобиля в поле Комментарий'); return false;"><b>Необходима проверка заказанных позиций <i class="icon-question-sign"></i></b></a>
+						<i id="aci"></i><br/>
+
+						<input type="checkbox" value="1" name="form[agree]" id="is_agree" checked="checked" required/>
+						<a href="<?=HTTP_ROOT?>/cartrules/" target="_blank" ><b>Согласен(а) с правилами пользования сайта и приобретения товара</b></a>
+						<br/><span class="msg-error" id="form_agree_err"></span>
+
+
+					<div style="width:100%; text-align:center;">
+					<button type="submit" title="Оформить заказ!"  onclick="ga('send', 'event', 'cart', 'step2');" class="crt-nxt top-20" id="cart-next-btn"  name="operation" value="doorder"><span>Оформить заказ <i class="icon-ok"></i></span></button></div>
+					<!--input type="hidden" name="partner" value="<?=$partner['id'] ?>"-->
+
+				</div>
+
+			</div>
+			</div>
+			<script>
+
+					$("#vote_zakaz_<?=$key ?>").on('click', function(event) {
+						event.preventDefault();
+						$("#bg_form_<?=$key ?>").fadeIn('300');
+					});
+
+					$(".close_popup").click(function(event) {
+						$(".bg_form").fadeOut('300');
+						remove_req();
+					});
+			</script>
+		</form>
+		<?php } ?>
+
+		<a class="custom-button cursor_s" style="float: none; width: 150px; height: 22px; color: #fff; background: linear-gradient(to bottom, #4e5295 0%, #1d185d 100%); font-family: neosanspro-regular-webfont, Arial, Helvetica, sans-serif;" onclick="window.history.back();">Продолжить покупки</a>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+
+	<?php }else{?>
+
+		<div style="float:left; width:50%; padding: 0px 0 40px 20px; line-height: 20px;">
+
+			<h2>В вашей корзине пусто!</h2>
+
+			<p>&nbsp;</p>
+			<p>Для добавления деталей в корзину нажмите на ссылку с<br>
+			изображением корзины в таблице результатов поиска
+			<span class="i-bask"><i class="icon icon-shopping-cart"></i></span>
+
+		</div>
+
+	<?php }?>
+
+</div>
+<script>
+	$(document).ready(function(){
+		$('#last-form').on('submit',function(){
+			alert($('#area').val());
+		});
+		$('#area').bind({allow_single_deselect: true});
+		$("#area").trigger("chosen:updated");
+	});
+	function set_req() {
+        $('#form_name').attr('required', true);
+        $('#form_name2').attr('required', true);
+        $('#form_name3').attr('required', true);
+        $('#form_phones').attr('required', true);
+        $('#a-merchant_type').attr('required', true);
+        $('#city').attr('required', true);
+        $('#area').attr('required', true);
+        $('#other_city').attr('required', true);
+
+    }
+    function remove_req(){
+        $('#form_name').removeAttr('required');
+        $('#form_name2').removeAttr('required');
+        $('#form_name3').removeAttr('required');
+        $('#form_phones').removeAttr('required');
+        $('#a-merchant_type').removeAttr('required');
+        $('#city').removeAttr('required');
+        $('#area').removeAttr('required');
+        $('#other_city').removeAttr('required');
+    }
+    function otherSelected(element){
+        if($(element).val() == '0' || $(element).val() == ''){
+            $('#other_city').attr('required', true);
+        } else if ($('#other_city').attr('required')) {
+                $('#other_city').removeAttr('required');
+            }
+    }
+</script>
