@@ -47,10 +47,17 @@ class HomeController extends Controller
         $posts = \TCG\Voyager\Models\Post::where('featured','1')->limit(1)->get();
         $post = $posts[0];
 
+        $page = \TCG\Voyager\Models\Page::where('slug','home')->get();
+        $page = $page[0];
+
+        $cards = \App\Card::all();
+
     	$arr = array(
     		'films_actual'      => $shows,
             'films_soon'        => $soon,
-            'post'             => $post,
+            'post'              => $post,
+            'page'              => $page,
+            'cards'             => $cards,
     		'title'             => 'Home Page',
     		'body_class'        => ''
     	);

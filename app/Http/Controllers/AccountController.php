@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
+use Socialite;
 
 class AccountController extends Controller
 {   
@@ -156,5 +157,64 @@ class AccountController extends Controller
         $res = json_decode($res->getBody()->getContents(),true);
         session(['token' => $res['auth']['session']['token']]);
         return redirect('/account');
+    }
+
+    public function logout(){         
+        $client = new Client([
+            'base_uri'  => 'https://api.vkino.com.ua',
+            'auth'      => [env('API_LOGIN', 'testagent'), env('API_PASS', 'testagent')],
+            'headers'   => ['auth-token'    => session('token'), 'device-id'     => session('device_id')]
+        ]);
+        $res = $client->post('/auth/logout',['query' => [
+            'version'       => '3.34',
+            'format'        => 'json'
+        ]]);
+        dd($res);
+        \Session::flush();
+        return redirect('/account');
+    }
+
+    public function google_redirect(){
+        return Socialite::driver('google')->redirect();
+    }
+
+    public function google_callback()
+    {   
+        $googleUser = Socialite::driver('google')->user();
+
+        if(!empty($googleUser->token)){
+
+            if(empty(session('device_id')))
+                $device_id = 'webcli-'.str_random(57);
+            else
+                $device_id = session('device_id');
+
+            $client = new Client([
+                'base_uri'  => 'https://api.vkino.com.ua',
+                'auth'      => [env('API_LOGIN', 'testagent'), env('API_PASS', 'testagent')],
+                'headers'   => ['device-id' => $device_id]
+            ]);
+            $res = $client->post('/auth/google/token',['query' => [
+                'version'       => '3.34',
+                'agent'         => env('API_AGENT','testagent'),
+                'token'         => $googleUser->token,
+                'format'        => 'json'
+            ]]);
+
+            $res = json_decode($res->getBody()->getContents(),true);
+
+            dd($res);
+        }
+    }
+
+    public function facebook_redirect(){
+        return Socialite::driver('facebook')->redirect();
+    }
+
+    public function facebook_callback()
+    {   
+
+        $leUser = Socialite::driver('facebook')->user();
+
     }
 }

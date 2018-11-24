@@ -22,7 +22,7 @@
 					</div>
 					<div class="social-auth">
 						<a href="#" class="fb-a"><img src="{{ asset('img/facebook-aut.png') }}" alt="">Facebook</a>
-						<a href="#" class="g-plus"><img src="{{ asset('img/g-plus-aut.png') }}" alt="">Google</a>
+						<a href="/account/login/google" class="g-plus"><img src="{{ asset('img/g-plus-aut.png') }}" alt="">Google</a>
 					</div>
 				</div>
 			</div>

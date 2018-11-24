@@ -32,9 +32,18 @@ Route::group(['prefix' => 'account'], function () {
     Route::get('/login', 'AccountController@login');
     Route::post('/login', 'AccountController@email');
 
+    Route::get('/login/google', 'AccountController@google_redirect');
+    Route::get('/login/google_callback', 'AccountController@google_callback');
+
+    Route::get('/login/facebook', 'AccountController@facebook_redirect');
+    Route::get('/login/facebook_callback', 'AccountController@facebook_callback');
+
     Route::get('/auth', 'AccountController@auth');
     Route::post('/auth', 'AccountController@login_code');
+
+    Route::get('/logout', 'AccountController@logout');
 });
+
 
 Route::group(['prefix' => 'admin'], function () {
     Voyager::routes();
