@@ -12,7 +12,7 @@
 							<p class="mail-password">Одноразовый пароль отправлен<br/>
 								на адрес <span>{{ session('email') }}</span>
 							</p>
-							<form method="POST" action="/account/auth">
+							<form id="auth_code_form" method="POST" action="javascript:void(0)">
 								@csrf('hidden_field')
 								<input type="text" name="code" placeholder="Ваш код">
 								<button type="submit" id="send"><img src="{{ asset('img/sendmail.png') }}" alt=""></button>

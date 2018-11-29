@@ -53,31 +53,34 @@
 		</div>
 		<div class="container wow fadeInLeftBig">
 			<div class="filters">
-				<div class="row">
-					<div class="col-6 col-sm-6 col-md-4">						
-						<label class="label-category">Выберите категорию</label>
-						<select class="custom" id="select-category">
-							<option selected>Все категории</option>
-							@foreach($cats as $cat)
-								<option>{{ $cat->name }}</option>
-							@endforeach						  
-						</select>
-					</div>
-					<div class="col-6 col-sm-6 col-md-4">
-						<label class="label-sort">Сортировка</label>
-						<select class="custom-second" id="select-by">
-						  <option>Самые новые</option>
-						  <option>Самые старые</option>
-						  <option>Перемешать</option>
-						</select>
-					</div>
-					<div class="col-12 col-sm-12 col-md-4">
-						<label class="label-search">Поиск по каталогу</label>
-						<div class="inp-wp">
-							<input type="text" placeholder="Название"><div></div>
+				<form action="javascript:void(0)" id="search_form">
+					@csrf
+					<div class="row">
+						<div class="col-6 col-sm-6 col-md-4">			
+							<label class="label-category">Выберите категорию</label>
+							<select class="custom" name="category" id="select-category">
+								<option selected value="">Все категории</option>
+								@foreach($cats as $cat)					
+									<option value="{{ $cat->id }}">{{ $cat->name }}</option>
+								@endforeach						  
+							</select>
 						</div>
+						<div class="col-6 col-sm-6 col-md-4">
+							<label class="label-sort">Сортировка</label>
+							<select name="sort" class="custom-second" id="select-by">
+							  <option value="ASC">Самые новые</option>
+							  <option value="DESC">Самые старые</option>
+							  <option value="RAND">Перемешать</option>
+							</select>
+						</div>					
+						<div class="col-12 col-sm-12 col-md-4">			
+							<label class="label-search">Поиск по каталогу</label>
+							<div class="inp-wp">
+								<input name="search_word" type="text" id="search_vip_film" placeholder="Название"><div></div>
+							</div>
+						</div>					
 					</div>
-				</div>
+				</form>
 			</div>
 		</div>
 		<div class="container">

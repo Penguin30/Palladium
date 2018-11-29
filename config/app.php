@@ -151,7 +151,7 @@ return [
          * Package Service Providers...
          */
         SammyK\LaravelFacebookSdk\LaravelFacebookSdkServiceProvider::class,
-        Laravel\Socialite\SocialiteServiceProvider::class,
+        \SocialiteProviders\Manager\ServiceProvider::class,
         /*
          * Application Service Providers...
          */
@@ -208,9 +208,7 @@ return [
         'Storage' => Illuminate\Support\Facades\Storage::class,
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
-        'View' => Illuminate\Support\Facades\View::class,
-        'Socialite' => Laravel\Socialite\Facades\Socialite::class,
-
+        'View' => Illuminate\Support\Facades\View::class
     ],
 
 ];

@@ -24,7 +24,7 @@
 	<meta name="viewport" content="initial-scale=1.0, width=device-width, user-scalable=no">
 
 	<link rel="stylesheet" href="{{ asset('css/main.min.css') }}">
-
+	<link rel="stylesheet" href="{{ asset('css/custom.css') }}">
 </head>
 
 <body class="{{ $body_class }}">
@@ -314,6 +314,6 @@
 	</div>
 
 	<script src="{{ asset('js/scripts.min.js') }}"></script>
-
+	<script src="{{ asset('js/ajax.js') }}"></script>
 </body>
 </html>

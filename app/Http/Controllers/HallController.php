@@ -53,4 +53,26 @@ class HallController extends Controller
         );
         return view('price', $arr);
     }
+
+    public function search(Request $request,Film $films){
+        if(!empty($request['search_word'])){
+            $films = $films->where('title','like','%'.$request['search_word'].'%');
+        }
+        if(!empty($request['category'])){
+            $films = $films->where('category_id',$request['category']);
+        }
+        $films = $films->orderBy('created_at',$request['sort'])->paginate(24);
+        $data='';
+        $data='<div class="row wow fadeInUpBig">';
+        foreach($films as $fm){
+            $data.='<div class="col-6 col-sm-6 col-md-3 col-lg-3 col-xl-2">';
+            $data.='<a href="/vip-film/'.$fm['slug'].'" class="vip-film-item text-center">';
+            $data.='<img src="'.\Voyager::image($fm['poster']).'" alt="">';
+            $data.='<span class="name-of-film">'.$fm['title'].'</span>';
+            $data.='</a>';
+            $data.='</div>';            
+        }
+        $data.='</div>';
+        return $data;
+    }
 }

@@ -13,7 +13,7 @@
 						<p>На почту придет одноразовый пароль</p>
 						<form method="POST" action="/account/login">
 							@csrf('hidden_field')
-							<input type="text" name="email" placeholder="Ваш Email">
+							<input type="email" name="email" placeholder="Ваш Email">
 							<button type="submit" id="send"><img src="{{ asset('img/sendmail.png') }}" alt=""></button>
 						</form>
 					</div>

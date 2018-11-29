@@ -49,7 +49,7 @@ $Carbon::setLocale('ru');
 														@foreach($fm['showtimes']['by-date']['date'] as $time)
 															@if($time['']['date'] == $film['date'])
 																@foreach($time['showtimes']['showtime'] as $st)
-																	<li class="@if($Carbon->parse($st['']['date'])->format('Y-m-d H:i')<$Carbon->now()->format('Y-m-d H:i'))passed @endif"><a href="#">{{ $Carbon->parse($st['']['date'])->format('H:i') }} @if($st['']['is3d'] == 'y')<img class="three-d-svg" src="{{ asset('img/3d.svg') }}"></img>@endif</a></li>
+																	<li class="@if($Carbon->parse($st['']['date'])->format('Y-m-d H:i')<$Carbon->now()->format('Y-m-d H:i'))passed @endif"><a href="/showtime/{{ $st['']['id'] }}">{{ $Carbon->parse($st['']['date'])->format('H:i') }} @if($st['']['is3d'] == 'y')<img class="three-d-svg" src="{{ asset('img/3d.svg') }}"></img>@endif</a></li>
 																@endforeach
 															@endif
 														@endforeach

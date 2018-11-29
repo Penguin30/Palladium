@@ -47,10 +47,10 @@
 							<ul class="sessions-time @if($i == 0) active @endif">
 								@foreach($showtime['showtimes']['showtime'] as $time)
 									@if($time['']['is3d'] == 'n')
-										<li><a href="#">{{ $Carbon->parse($time['']['date'])->format('H:i') }}</a></li>
+										<li><a href="/showtime/{{ $time['']['id'] }}">{{ $Carbon->parse($time['']['date'])->format('H:i') }}</a></li>
 									@else
 										<?php $is3d = 1; ?>
-										<li><a href="#">{{ $Carbon->parse($time['']['date'])->format('H:i') }} <img class="three-d-svg" src="{{ asset('img/3d.svg') }}"></img></a></li>
+										<li><a href="/showtime/{{ $time['']['id'] }}">{{ $Carbon->parse($time['']['date'])->format('H:i') }} <img class="three-d-svg" src="{{ asset('img/3d.svg') }}"></img></a></li>
 									@endif
 								@endforeach
 							</ul>		

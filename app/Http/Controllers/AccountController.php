@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
 use Socialite;
+use Google_Client;
 
 class AccountController extends Controller
 {   
@@ -155,8 +156,12 @@ class AccountController extends Controller
             'format'    => 'json'
         ]]);
         $res = json_decode($res->getBody()->getContents(),true);
-        session(['token' => $res['auth']['session']['token']]);
-        return redirect('/account');
+        if( $res['code'] == 1){
+            session(['token' => $res['auth']['session']['token']]);
+            return redirect('/account');
+        }else{
+            return $res['code'];
+        }
     }
 
     public function logout(){         
@@ -169,21 +174,24 @@ class AccountController extends Controller
             'version'       => '3.34',
             'format'        => 'json'
         ]]);
-        dd($res);
-        \Session::flush();
-        return redirect('/account');
+        $res = json_decode($res->getBody()->getContents(),true);
+        if($res['code'] == 1)
+            \Session::flush();
+        return redirect('/');
     }
 
     public function google_redirect(){
-        return Socialite::driver('google')->redirect();
+       return Socialite::with('google')->redirect();
     }
 
     public function google_callback()
     {   
-        $googleUser = Socialite::driver('google')->user();
+        $user = Socialite::with('google')->user();
+        $token = $user->accessTokenResponseBody['access_token'];
 
-        if(!empty($googleUser->token)){
+        // dd($token);
 
+        if(!empty($token)){
             if(empty(session('device_id')))
                 $device_id = 'webcli-'.str_random(57);
             else
@@ -197,7 +205,7 @@ class AccountController extends Controller
             $res = $client->post('/auth/google/token',['query' => [
                 'version'       => '3.34',
                 'agent'         => env('API_AGENT','testagent'),
-                'token'         => $googleUser->token,
+                'token'         => $token,
                 'format'        => 'json'
             ]]);
 

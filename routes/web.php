@@ -20,6 +20,9 @@ Route::get('/price', 'HallController@price');
 
 Route::get('/vip-hall', 'HallController@vip');
 Route::get('/vip-film/{slug}', 'HallController@film');
+Route::post('/vip-film/search', 'HallController@search');
+
+Route::get('/showtime/{showtime_id}', 'ShowTimesController@index');
 
 Route::group([ 'prefix' => 'news'], function(){
 	Route::get('/', 'NewsController@index');
