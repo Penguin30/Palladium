@@ -18,7 +18,7 @@ class ShowTimesController extends Controller
             'theater'		=> env('API_THEATER','palladium'),
             'format'        => 'json'
         ]]);
-        $res = json_decode($res->getBody()->getContents(),true);
+        $res = json_decode($res->getBody()->getContents(),true);        
         $hall = $client->get('/hall-scheme',['query' => [
             'showtime'		=> $showtime_id,
             'agent'         => env('API_AGENT','testagent'),
@@ -26,7 +26,9 @@ class ShowTimesController extends Controller
             'format'        => 'json'
         ]]);
         $hall = json_decode($hall->getBody()->getContents(),true);
-
+        if($hall['code'] != 1){
+            return redirect(\Request::server('HTTP_REFERER'));
+        }
         $arr = array(
             'title'         => 'Покупка билетов на '.$res['show']['name'],
             'body_class'    => 'movie-details',

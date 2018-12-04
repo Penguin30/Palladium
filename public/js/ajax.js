@@ -54,3 +54,10 @@ $(document).ready(function(){
         });
     });
 });
+$('.payment-buy-button').on('click',function(){
+    var tickets = $('.seat-row-gought');
+    if(tickets.length > 0){
+        for(var i=0; i<tickets.length; ++i){
+        }
+    }
+});

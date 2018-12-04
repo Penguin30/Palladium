@@ -39,7 +39,7 @@
 						<div class="navigation__left">						
 							<a href="/" class="logo"><img src="{{ asset('img/logo-desktop_backUp.png') }}" alt=""></a>
 							<a href="/" class="logo-responsive"><img class="logo-responsive-image" src="{{ asset('img/logo-responsive.png') }}" alt=""><img class="logo-responsive-image-retina" src="{{ asset('img/logo-responsive-retina.png') }}" alt=""></a>
-							{{ menu('main', 'main_menu') }}							
+							{{ menu('main', 'main_menu') }}				
 						</div>
 					</div>
 					<div class="col-6 col-md-4">

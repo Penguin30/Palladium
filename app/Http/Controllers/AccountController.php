@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use GuzzleHttp\Client;
 use Socialite;
 use Google_Client;
+use App\Auth;
 
 class AccountController extends Controller
 {   
@@ -15,10 +16,7 @@ class AccountController extends Controller
     *
     */
     public function index(){
-        if(empty(session('device_id')))
-            $device_id = 'webcli-'.str_random(57);
-        else
-            $device_id = session('device_id');
+        $device_id = env('DEVICE_ID');
         $client = new Client([
             'base_uri'  => 'https://api.vkino.com.ua',
             'auth'      => [env('API_LOGIN', 'testagent'), env('API_PASS', 'testagent')],
@@ -31,10 +29,7 @@ class AccountController extends Controller
         ]]);
         $session = json_decode($res->getBody()->getContents(),true);
         if($session['code'] < 0){
-            $arr = array(
-                'title'         => 'Вход',
-                'body_class'    => 'movie-details'
-            );
+            session()->forget('token');
             return redirect('/account/login');
         }else{
             session(['account_id' => $session['userAccount'][0]['id']]);
@@ -48,33 +43,30 @@ class AccountController extends Controller
                 'version'   => '3.34'
             ]]);
             $account = json_decode($res->getBody()->getContents(),true);
+
+            $res = $client->get('/customer/get-profile',[ 'query' => [
+                'format'    => 'json',
+                'version'   => '3.34',
+                'agent'     => env('API_AGENT','testagent'),
+                'theater'   => env('API_THEATER','palladium'),
+                'customer'  => '912361495382',
+                'code'      => '0935876774'
+            ]]);
+
+            $profile = json_decode($res->getBody()->getContents(),true);
             $arr = array(
                 'title'         => 'Личный кабинет',
                 'body_class'    => 'movie-details',
                 'tickets'       => $tickets,
-                'account'       => $account
+                'account'       => $account,
+                'profile'       => $profile
             );
             return view('account',$arr);
         }
     }
 
     public function login(){
-        if(empty(session('device_id')))
-            $device_id = 'webcli-'.str_random(57);
-        else
-            $device_id = session('device_id');
-        $client = new Client([
-            'base_uri'  => 'https://api.vkino.com.ua',
-            'auth'      => [env('API_LOGIN', 'testagent'), env('API_PASS', 'testagent')],
-            'headers'   => ['auth-token' => session('token'),'device-id' => $device_id]
-        ]);
-        $res=$client->post('/auth/touch',['query' => [
-            'version'       => '3.34',
-            'agent'         => env('API_AGENT','testagent'),
-            'format'        => 'json'
-        ]]);
-        $session = json_decode($res->getBody()->getContents(),true);
-        if($session['code'] < 0){
+        if(empty(session('token'))){
             $arr = array(
                 'title'         => 'Вход',
                 'body_class'    => 'movie-details'
@@ -90,10 +82,7 @@ class AccountController extends Controller
             'email' => 'required'
         ]);
         $email = $validate['email'];
-        if(empty(session('device_id')))
-            $device_id = 'webcli-'.str_random(57);
-        else
-            $device_id = session('device_id');
+        $device_id = env('DEVICE_ID');
         $client = new Client([
             'base_uri' => 'https://api.vkino.com.ua',
             'auth'      => [env('API_LOGIN', 'testagent'), env('API_PASS', 'testagent')],
@@ -106,15 +95,12 @@ class AccountController extends Controller
             'format'    => 'json'
         ]]);
         $result = json_decode($res->getBody()->getContents(),true);
-        session(['email' => $email,'device_id' => $device_id]);
+        session(['email' => $email]);
         return redirect('/account/auth');
     }
 
     public function auth(){
-        if(empty(session('device_id')))
-            $device_id = 'webcli-'.str_random(57);
-        else
-            $device_id = session('device_id');
+        $device_id = env('DEVICE_ID');
         $client = new Client([
             'base_uri'  => 'https://api.vkino.com.ua',
             'auth'      => [env('API_LOGIN', 'testagent'), env('API_PASS', 'testagent')],
@@ -138,6 +124,7 @@ class AccountController extends Controller
     }
 
     public function login_code(Request $request){
+        $device_id = env('DEVICE_ID');
         $validate = $request->validate([
             'code' => 'required'
         ]);
@@ -146,7 +133,7 @@ class AccountController extends Controller
         $client = new Client([
             'base_uri'  => 'https://api.vkino.com.ua',
             'auth'      => [env('API_LOGIN', 'testagent'), env('API_PASS', 'testagent')],
-            'headers'   => ['device-id' => session('device_id')]
+            'headers'   => ['device-id' => $device_id]
         ]);
         $res = $client->post('/auth/email-otp/login',['query' => [
             'version'   => '3.34',
@@ -164,11 +151,12 @@ class AccountController extends Controller
         }
     }
 
-    public function logout(){         
+    public function logout(){ 
+        $device_id = env('DEVICE_ID');
         $client = new Client([
             'base_uri'  => 'https://api.vkino.com.ua',
             'auth'      => [env('API_LOGIN', 'testagent'), env('API_PASS', 'testagent')],
-            'headers'   => ['auth-token'    => session('token'), 'device-id'     => session('device_id')]
+            'headers'   => ['auth-token'    => session('token'), 'device-id'     => $device_id]
         ]);
         $res = $client->post('/auth/logout',['query' => [
             'version'       => '3.34',
@@ -176,27 +164,22 @@ class AccountController extends Controller
         ]]);
         $res = json_decode($res->getBody()->getContents(),true);
         if($res['code'] == 1)
-            \Session::flush();
+            session()->forget('token');
         return redirect('/');
     }
 
-    public function google_redirect(){
-       return Socialite::with('google')->redirect();
+    public function google_redirect()
+    {   
+        return Socialite::with('google')->redirect();
     }
 
     public function google_callback()
     {   
-        $user = Socialite::with('google')->user();
-        $token = $user->accessTokenResponseBody['access_token'];
-
-        // dd($token);
-
+        $user   = Socialite::with('google')->user();
+        $token  = $user->accessTokenResponseBody;
+        dd($token);
         if(!empty($token)){
-            if(empty(session('device_id')))
-                $device_id = 'webcli-'.str_random(57);
-            else
-                $device_id = session('device_id');
-
+            $device_id = env('DEVICE_ID');
             $client = new Client([
                 'base_uri'  => 'https://api.vkino.com.ua',
                 'auth'      => [env('API_LOGIN', 'testagent'), env('API_PASS', 'testagent')],
@@ -225,4 +208,35 @@ class AccountController extends Controller
         $leUser = Socialite::driver('facebook')->user();
 
     }
+
+    public function create_profile(Request $request, Auth $auth){
+        $valid = $request->validate([
+            'phone' => 'required'
+        ]);
+        $phone = $valid['phone'];
+        $client = new Client([
+            'base_uri'  => 'https://api.vkino.com.ua',
+            'auth'      => [env('API_LOGIN', 'testagent'), env('API_PASS', 'testagent')]
+        ]);
+        $body  = '{';
+        $body .= '"phoneCell": "'.$phone.'",';
+        $body .= '"email":"'.session('email').'",';
+        $body .= '"firstName":"'.session('email').'",';
+        $body .= '"city":"kharkov"';
+        $body .= '}';
+
+        $res = $client->post('/customer/store-profile',['query' => [
+            'version'       => '3.34',
+            'agent'         => env('API_AGENT','testagent'),
+            'theater'       => env('API_THEATER','palladium'),
+            'format'        => 'json',
+        ], 'body' => $body]);
+
+        $res = json_decode($res->getBody()->getContents(), true);
+        $auth->card  = $res['card'];
+        $auth->phone = $phone;
+        $auth->email = session('email');
+        $auth->save();
+        return redirect('/account');
+    }   
 }

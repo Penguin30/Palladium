@@ -329,10 +329,12 @@ $(function() {
   });
 
   $(".soon .play-button").magnificPopup({
-    items: {
-      src: '<div class="trailer-popup"><video controls><source src="videos/Avengers.mp4" type="video/mp4"></video></div>',
-      type: 'inline'
-    },
+    type: 'iframe',
+    closeBtnInside:true
+  });
+
+  $(".slider-home .play-button").magnificPopup({
+    type: 'iframe',
     closeBtnInside:true
   });
 
@@ -887,7 +889,7 @@ $(document).on('click', '.close-director-popup', function (e) {
 			var $currentRow = $(this).closest('.seats-row').data('row');
 			var $currentPlace = $(this).data('place');
 			var $currentPrice = $(this).data('price');
-			var $seat_rows = `<div class="seat-row-gought" id="${$currentPlace}">
+			var $seat_rows = `<div class="seat-row-gought" id="${$currentPlace}" data-row="${$currentRow}">
 								<div class="row">
 									<div class="col-3">
 										<span class="chosen-row">Ряд <span class="row-n row-line">${$currentRow}</span></span>
@@ -900,22 +902,27 @@ $(document).on('click', '.close-director-popup', function (e) {
 									</div>
 									<div class="col-2">
 										<div class="delete text-right">
-											<a href="#" class="delete"><img src="img/delete.png" alt=""></a></div>
+											<a href="#" class="delete"><img src="/img/delete.png" alt=""></a></div>
 										</div>
 									</div>
 							</div>`;
 			if($(this).hasClass('chosen')) {
-				$container_adding_tickets.addClass('seats-filled db-payment').find('h4').remove();
-				$container_adding_tickets.append($seat_rows);
-				$('.chosen-seats.seats-filled .seat-row-gought a.delete').click(function() {
+				$container_adding_tickets.addClass('seats-filled db-payment').find('h4').addClass('d-none');
+				$container_adding_tickets.find('.buy-price-info').removeClass('d-none');
+				$container_adding_tickets.prepend($seat_rows);
+				$('.chosen-seats.seats-filled .seat-row-gought[id='+$currentPlace+'][data-row='+$currentRow+'] a.delete').on('click', function() {
+					$('.price-final .uan').text( +$('.price-final .uan').text() - +$(this).closest('.seat-row-gought').find('.price').text());
+					$('.seats-row[data-row='+$(this).closest('.seat-row-gought').find('.row-line').text()+']').find('[data-place='+$(this).closest('.seat-row-gought').attr('id')+']').removeClass('chosen');
+					$('.seats-row[data-row='+$(this).closest('.seat-row-gought').find('.row-line').text()+']').find('[data-place='+$(this).closest('.seat-row-gought').attr('id')+'] span').remove();
 					$(this).closest('.seat-row-gought').remove();
-//					var $tstNum = self.eq($(this).index()).data('place');
-//					if($tstNum == self.data('place')) {
-//						console.log(true)
-//					} 
-					
+					if(!$container_adding_tickets.has('.seat-row-gought').length) {
+						$container_adding_tickets.removeClass('seats-filled db-payment').find('h4').removeClass('d-none');
+						$container_adding_tickets.find('.buy-price-info').addClass('d-none');
+					}
+					$(this).off('click');
 					return false;
 				});
+				$('.price-final .uan').text( +$('.price-final .uan').text() + $currentPrice);
 			} else {
 				var $seat = $(this).data('place');
 				console.log($seat);
@@ -924,10 +931,12 @@ $(document).on('click', '.close-director-popup', function (e) {
 //				if(!$.contains($container_adding_tickets, $container_adding_tickets.children()) ) {	
 //					$('.chosen-seats').removeClass('seats-filled db-payment').html('<h4>Выберите места</h4>');	
 //				}
+        $('.price-final .uan').text( +$('.price-final .uan').text() - $currentPrice);
 			}
-		
-		
-			
+      if(!$container_adding_tickets.has('.seat-row-gought').length) {
+        $container_adding_tickets.removeClass('seats-filled db-payment').find('h4').removeClass('d-none');
+        $container_adding_tickets.find('.buy-price-info').addClass('d-none');
+      }
 		
 	});
 	
@@ -1022,6 +1031,28 @@ $(document).on('click', '.close-director-popup', function (e) {
   // $(".about-movie .play-button.current-film").click(function(){
   //   player.playVideo();
   // });
+
+  $('.added-cards .delete-card').click(function(){
+    $(this).parent().parent().remove();
+  });
+  $('#add-bonus-card').click(function(){
+    $('.cards-wrapper .row.new-card').toggleClass('d-none');
+  });
+  $('.new-card .add-card').click(function(){
+    $(this).closest('.col-lg-12').clone().appendTo('.cards-wrapper .row.added-cards');
+
+    $('.added-cards .col-lg-12:last-child').find('.add-card').html('<img class="delete-card-icon" src="img/delete.png" alt="">'
+                                                                    +'<img class="delete-card-icon-retina" src="img/delete-retina.png" alt="">Удалить карту');
+    $('.added-cards .col-lg-12:last-child').find('.add-card').addClass('delete-card');
+    $('.added-cards .col-lg-12:last-child').find('.add-card').removeClass('add-card');
+    $('.added-cards .col-lg-12:last-child').find('.delete-card').click(function(){
+      $(this).parent().parent().remove();
+    });
+    // $('.added-cards .col-lg-12:last-child .bonus-card-template').next().html('<span class="delete-card">'
+    //           +'<img class="delete-card-icon" src="img/delete.png" alt="">'
+    //           +'<img class="delete-card-icon-retina" src="img/delete-retina.png" alt="">Удалить карту</span>');
+  });
+
 });
 
   var tag = document.createElement('script');

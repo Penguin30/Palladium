@@ -45,6 +45,8 @@ Route::group(['prefix' => 'account'], function () {
     Route::post('/auth', 'AccountController@login_code');
 
     Route::get('/logout', 'AccountController@logout');
+
+    Route::post('/create_profile', 'AccountController@create_profile');
 });
 
 

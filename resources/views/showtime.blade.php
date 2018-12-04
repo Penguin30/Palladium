@@ -1,7 +1,8 @@
 @extends('layouts.main')
 @section('content')
 <?php $Carbon = new \Carbon\Carbon(); ?>
-<div class="fix-overflow-all">			
+<div class="fix-overflow-all">		
+	<input type="hidden" class="showtime_id" value="{{ $hall['showtime']['id'] }}">	
 	<section class="payment payment-seats">
 		<div class="container">
 			<a href="{{ Request::server('HTTP_REFERER') }}" class="get-back"><img src="{{ asset('img/arrow-back.png') }}" alt="">Назад</a>
@@ -10,15 +11,15 @@
 					<div class="col-xl-6">
 						<div class="hall-seats">
 							<img src="{{ asset('img/screen-scheme.png') }}" alt="" class="mobile-screen">
-							@for($i = 1; $i < $hall['hall']['rowsCount']; $i++)
+							@for($i = 1; $i <= $hall['hall']['rowsCount']; $i++)
 								<div class="seats-row @if($i == 1) first @else two @endif" data-row="{{ $i }}">
 									<span class="number-of-row">{{ $i }}</span>
 									@foreach($hall['scheme']['seat'] as $seat)
 										@if($seat['row'] == $i)
 											@if($seat['status'] == 1)
-												<div class="seat-item-square seat-place" data-place="{{ $seat['seat'] }}" data-price="{{ $seat['price'] }}"></div>
+												<div class="seat-item-square @if($seat['priceId'] == 0) yellow @elseif($seat['priceId'] == 1) light-brown @elseif($seat['priceId'] == 2) dark-brown @endif seat-place" data-place="{{ $seat['seat'] }}" data-price="{{ $seat['price'] }}"></div>
 											@else
-												<div class="seat-item-square bought seat-place" data-place="{{ $seat['seat'] }}" data-price="{{ $seat['price'] }}"></div>
+												<div class="seat-item-square bought seat-place" style="cursor: initial;" data-place="{{ $seat['seat'] }}" data-price="{{ $seat['price'] }}"></div>
 											@endif
 										@endif
 									@endforeach
@@ -60,15 +61,17 @@
 										<p>Вы можете оплатить бонусами 1 грн = 1 бонус</p>
 									</div>
 									<span class="price-final"><span class="uan">0</span> грн</span>
-									<a class="payment-buy-button" href="#">Купить</a>
+									<a class="payment-buy-button" href="javscript:void(0)">Купить</a>
 								</div>
 							</div>
-							<div class="wrapper-glasses">
-								<div class="glasses-notification">
-									<img src="{{ asset('img/glasses.png') }}" alt="">
-									<p>Внимание! Купить 3D очки (X-filters) можно в кассе кинотеатра. Стоимость очков от 10 грн.</p>
+							@if($hall['showtime']['is3d'] == 'y')
+								<div class="wrapper-glasses">
+									<div class="glasses-notification">
+										<img src="{{ asset('img/glasses.png') }}" alt="">
+										<p>Внимание! Купить 3D очки (X-filters) можно в кассе кинотеатра. Стоимость очков от 10 грн.</p>
+									</div>	
 								</div>	
-							</div>	
+							@endif
 						</div>
 					</div>  
 				</div>
