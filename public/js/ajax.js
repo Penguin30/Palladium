@@ -54,10 +54,59 @@ $(document).ready(function(){
         });
     });
 });
-$('.payment-buy-button').on('click',function(){
-    var tickets = $('.seat-row-gought');
-    if(tickets.length > 0){
-        for(var i=0; i<tickets.length; ++i){
+$('.hall-seats .seat-place').on('click',function(){
+    if($(this).hasClass('chosen')){
+        $('#order_seats').find('input[value="'+$(this).data('id')+'"]').remove();        
+    }else{
+        var input = '<input type="hidden" value='+$(this).data('id')+' name="seats[]">'
+        $('#order_seats').append(input);
+    }
+});
+$(document).ready(function(){
+    var options =  {
+      onComplete: function(cep) {
+        $('#pay_card_form #tel').addClass('confirmed');
+        $('#pay_card_form button.pay').removeAttr('disabled');
+      },
+      onChange: function(cep){
+        if($('#pay_card_form #tel').cleanVal().length < 10){
+            $('#pay_card_form #tel').addClass('declined');
+            $('label[for="tel"]').addClass('declined');
+            $('#pay_card_form button.pay').attr('disabled','true');
+        }else{
+            $('#pay_card_form #tel').removeClass('declined');
+            $('label[for="tel"]').removeClass('declined');
+            $('#pay_card_form button.pay').removeAttr('disabled');
+            $('#pay_card_form #tel').addClass('confirmed');
+            $('label[for="tel"]').addClass('confirmed');
+        }
+      },
+      onInvalid: function(val, e, f, invalid, options){
+        $('#pay_card_form #tel').addClass('declined');
+        $('label[for="tel"]').addClass('declined');
+      }
+    };
+    $('#pay_card_form #tel').mask('(000) 00 00 000', options);
+    if($('#pay_card_form #tel').cleanVal().length == 10){
+        $('#pay_card_form #tel').addClass('confirmed');
+    }
+});
+$('#pay_card_form #email').on('input',function(){
+    $(this).removeClass('declined');
+    $('label[for="email"]').removeClass('declined');
+    if($(this).val().length == 0){
+        $(this).addClass('declined');
+        $('label[for="email"]').addClass('declined');
+    }else{
+        pattern = /^([a-z0-9_\.-])+@[a-z0-9-]+\.([a-z]{2,4}\.)?[a-z]{2,4}$/i;
+        if(!pattern.test($(this).val())){
+            $('#pay_card_form button.pay').attr('disabled','true');
+            $(this).addClass('declined');
+            $('label[for="email"]').addClass('declined');
+        }else{
+            $('#pay_card_form button.pay').removeAttr('disabled');
+            $(this).addClass('confirmed');
+            $('label[for="email"]').addClass('confirmed');
         }
     }
 });

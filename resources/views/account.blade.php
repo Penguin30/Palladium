@@ -22,7 +22,7 @@
 										<a href="/shedule" class="to-shedule">Расписание</a>
 									</div>
 								@else							
-									 <div class="tickets-list">
+									<div class="tickets-list">
 										<div class="table-names">
 											<div class="row">
 												<div class="col-3 col-sm-3 col-md-2 col-lg-1 col-xl-1 order-number-column">
@@ -66,75 +66,31 @@
 												</div>
 											</div>
 										</div>
-										<div class="ticket-row wow fadeInLeftBig">
-											<div class="row">
-												<div class="col-6 col-sm-6 col-md-2 col-lg-1 col-xl-1 order-number-column">
-													<span class="tickets-code">5253356</span>
-												</div>
-												<div class="col-6 col-sm-6 col-md-2 col-lg-2 col-xl-1 date-column">
-													<span class="data-tickets">19.05.2018 <br> 00:19</span>
-												</div>
-												<div class="col-md-4 col-lg-4 col-xl-5 clearfix film-column">
-													<div class="img-wrapper">
-														<img src="img/avengers-small.jpg" alt="">
+										@foreach($tickets['orders']['invoice'] as $ticket)
+											<div class="ticket-row wow fadeInLeftBig">
+												<div class="row">
+													<div class="col-6 col-sm-6 col-md-2 col-lg-1 col-xl-1 order-number-column">
+														<span class="tickets-code">{{ $ticket['number'] }}</span>
 													</div>
-													<span class="movie-name">Мстители: Война бесконечности (3D <br> RealD)<span class="years-allowed">16+</span></span>
-													<span class="date-sheduled">Воскресенье, 25 сентября    13:00    Зал «Лондон»</span>
-												</div>
-												<div class="col-md-2 col-lg-2 col-xl-2 summ-column">
-													<span class="ticket-price">170 <span class="uah">грн</span></span>
-												</div>
-												<div class="col-md-2 col-lg-3 col-xl-3">
-													<a href="#" class="tickets-open">Открыть заказ</a>
+													<div class="col-6 col-sm-6 col-md-2 col-lg-2 col-xl-1 date-column">
+														<span class="data-tickets">{{ $Carbon->parse($ticket['created'])->format('d.m.Y') }}<br> {{ $Carbon->parse($ticket['created'])->format('H:i') }}</span>
+													</div>
+													<div class="col-md-4 col-lg-4 col-xl-5 clearfix film-column">
+														<div class="img-wrapper">
+															<img src="img/avengers-small.jpg" alt="">
+														</div>
+														<span class="movie-name">Мстители: Война бесконечности (3D <br> RealD)<span class="years-allowed">16+</span></span>
+														<span class="date-sheduled">Воскресенье, 25 сентября    13:00    Зал «Лондон»</span>
+													</div>
+													<div class="col-md-2 col-lg-2 col-xl-2 summ-column">
+														<span class="ticket-price">{{ $ticket['amount'] }} <span class="uah">грн</span></span>
+													</div>
+													<div class="col-md-2 col-lg-3 col-xl-3">
+														<a href="#" class="tickets-open">Открыть заказ</a>
+													</div>
 												</div>
 											</div>
-										</div>
-										<div class="ticket-row wow fadeInRightBig">
-											<div class="row">
-												<div class="col-6 col-sm-6 col-md-2 col-lg-1 col-xl-1 order-number-column">
-													<span class="tickets-code">5253356</span>
-												</div>
-												<div class="col-6 col-sm-6 col-md-2 col-lg-2 col-xl-1 date-column">
-													<span class="data-tickets">19.05.2018 <br> 00:19</span>
-												</div>
-												<div class="col-md-4 col-lg-4 col-xl-5 clearfix film-column">
-													<div class="img-wrapper">
-														<img src="img/avengers-small.jpg" alt="">
-													</div>
-													<span class="movie-name">Мстители: Война бесконечности (3D <br> RealD)<span class="years-allowed">16+</span></span>
-													<span class="date-sheduled">Воскресенье, 25 сентября    13:00    Зал «Лондон»</span>
-												</div>
-												<div class="col-md-2 col-lg-2 col-xl-2 summ-column">
-													<span class="ticket-price">170 <span class="uah">грн</span></span>
-												</div>
-												<div class="col-md-2 col-lg-3 col-xl-3">
-													<span class="payment-failed">Прострочена оплата </span>
-												</div>
-											</div>
-										</div>
-										<div class="ticket-row wow fadeInLeftBig">
-											<div class="row">
-												<div class="col-6 col-sm-6 col-md-2 col-lg-1 col-xl-1 order-number-column">
-													<span class="tickets-code">5253356</span>
-												</div>
-												<div class="col-6 col-sm-6 col-md-2 col-lg-2 col-xl-1 date-column">
-													<span class="data-tickets">19.05.2018 <br> 00:19</span>
-												</div>
-												<div class="col-md-4 col-lg-4 col-xl-5 clearfix film-column">
-													<div class="img-wrapper">
-														<img src="img/avengers-small.jpg" alt="">
-													</div>
-													<span class="movie-name">Мстители: Война бесконечности (3D <br> RealD)<span class="years-allowed">16+</span></span>
-													<span class="date-sheduled">Воскресенье, 25 сентября    13:00    Зал «Лондон»</span>
-												</div>
-												<div class="col-md-2 col-lg-2 col-xl-2 summ-column">
-													<span class="ticket-price">170 <span class="uah">грн</span></span>
-												</div>
-												<div class="col-md-2 col-lg-3 col-xl-3">
-													<span class="payment-failed">Возвращен</span>
-												</div>
-											</div>
-										</div>
+										@endforeach
 									</div> 
 								@endif
 							</div>

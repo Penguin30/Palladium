@@ -15,7 +15,7 @@ class AccountController extends Controller
     * Go to aacount
     *
     */
-    public function index(){
+    public function index(Auth $auth){
         $device_id = env('DEVICE_ID');
         $client = new Client([
             'base_uri'  => 'https://api.vkino.com.ua',
@@ -32,12 +32,17 @@ class AccountController extends Controller
             session()->forget('token');
             return redirect('/account/login');
         }else{
+            $user = $auth->where('email',session('email'))->get();
+            $user = $user[0];
+
             session(['account_id' => $session['userAccount'][0]['id']]);
             $res = $client->get('/orders-by-account/all',[ 'query' => [
-                'account_id' => session('account_id'),
+                'account_id' => $session['userAccount'][0]['id'],
+                'agent'      => env('API_AHGENT','testagent'),
                 'format'     => 'json'
             ]]);
             $tickets = json_decode($res->getBody()->getContents(),true);
+
             $res = $client->get('/auth/status',[ 'query' => [
                 'format'    => 'json',
                 'version'   => '3.34'
@@ -49,11 +54,12 @@ class AccountController extends Controller
                 'version'   => '3.34',
                 'agent'     => env('API_AGENT','testagent'),
                 'theater'   => env('API_THEATER','palladium'),
-                'customer'  => '912361495382',
-                'code'      => '0935876774'
+                'customer'  => $user->card,
+                'code'      => $user->phone
             ]]);
 
             $profile = json_decode($res->getBody()->getContents(),true);
+
             $arr = array(
                 'title'         => 'Личный кабинет',
                 'body_class'    => 'movie-details',

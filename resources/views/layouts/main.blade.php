@@ -311,9 +311,9 @@
 		<img class="cashier-arrow" src="{{ asset('img/cashier-arrow-up.png') }}" alt="">
 		<a href="{{ setting('sayt.tel_shop_link') }}" target="_blank"><img class="cashier-logo" src="{{ asset('img/telegram-icon-retina.png') }}" alt="">
 		<span>Telegram кассир</span></a>
-	</div>
-
+	</div>	
 	<script src="{{ asset('js/scripts.min.js') }}"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.15/jquery.mask.min.js"></script>
 	<script src="{{ asset('js/ajax.js') }}"></script>
 </body>
 </html>

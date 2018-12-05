@@ -22,7 +22,17 @@ Route::get('/vip-hall', 'HallController@vip');
 Route::get('/vip-film/{slug}', 'HallController@film');
 Route::post('/vip-film/search', 'HallController@search');
 
-Route::get('/showtime/{showtime_id}', 'ShowTimesController@index');
+Route::group([ 'prefix' => 'showtime'], function(){
+    Route::get('/{showtime_id}', 'ShowTimesController@index');
+    Route::post('/order/{showtime_id}', 'ShowTimesController@order');
+    Route::get('/order/{showtime_id}', function ($showtime_id) {
+        return redirect('/showtime/'.$showtime_id);
+    });
+    Route::post('/pay/{showtime_id}', 'ShowTimesController@pay');
+    Route::get('/pay/{showtime_id}', function ($showtime_id) {
+        return redirect('/showtime/'.$showtime_id);
+    });
+});
 
 Route::group([ 'prefix' => 'news'], function(){
 	Route::get('/', 'NewsController@index');

@@ -2,7 +2,6 @@
 @section('content')
 <?php $Carbon = new \Carbon\Carbon(); ?>
 <div class="fix-overflow-all">		
-	<input type="hidden" class="showtime_id" value="{{ $hall['showtime']['id'] }}">	
 	<section class="payment payment-seats">
 		<div class="container">
 			<a href="{{ Request::server('HTTP_REFERER') }}" class="get-back"><img src="{{ asset('img/arrow-back.png') }}" alt="">Назад</a>
@@ -17,7 +16,7 @@
 									@foreach($hall['scheme']['seat'] as $seat)
 										@if($seat['row'] == $i)
 											@if($seat['status'] == 1)
-												<div class="seat-item-square @if($seat['priceId'] == 0) yellow @elseif($seat['priceId'] == 1) light-brown @elseif($seat['priceId'] == 2) dark-brown @endif seat-place" data-place="{{ $seat['seat'] }}" data-price="{{ $seat['price'] }}"></div>
+												<div data-id="{{ $seat['id'] }}" class="seat-item-square @if($seat['priceId'] == 0) yellow @elseif($seat['priceId'] == 1) light-brown @elseif($seat['priceId'] == 2) dark-brown @endif seat-place" data-place="{{ $seat['seat'] }}" data-price="{{ $seat['price'] }}"></div>
 											@else
 												<div class="seat-item-square bought seat-place" style="cursor: initial;" data-place="{{ $seat['seat'] }}" data-price="{{ $seat['price'] }}"></div>
 											@endif
@@ -55,14 +54,17 @@
 							</div>
 							<div class="chosen-seats">
 								<h4>Выберите места</h4>
-								<div class="buy-price-info d-none">
-									<div class="info-wrapper">
-										<img src="/img/info.png" alt="">
-										<p>Вы можете оплатить бонусами 1 грн = 1 бонус</p>
+								<form action="/showtime/order/{{ $hall['showtime']['id'] }}" id="order_seats" method="POST">
+									@csrf
+									<div class="buy-price-info d-none">
+										<div class="info-wrapper">
+											<img src="/img/info.png" alt="">
+											<p>Вы можете оплатить бонусами 1 грн = 1 бонус</p>
+										</div>
+										<span class="price-final"><span class="uan">0</span> грн</span>
+										<button style="border:none;cursor: pointer;" type="submit" class="payment-buy-button">Купить</button>
 									</div>
-									<span class="price-final"><span class="uan">0</span> грн</span>
-									<a class="payment-buy-button" href="javscript:void(0)">Купить</a>
-								</div>
+								</form>
 							</div>
 							@if($hall['showtime']['is3d'] == 'y')
 								<div class="wrapper-glasses">
