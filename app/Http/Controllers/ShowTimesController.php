@@ -102,7 +102,6 @@ class ShowTimesController extends Controller
             'format'        => 'json'
         ]]);
         $res = json_decode($res->getBody()->getContents(),true);
-        
         dd($res);
     }
 }
