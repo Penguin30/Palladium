@@ -59,14 +59,29 @@ class AccountController extends Controller
             ]]);
 
             $profile = json_decode($res->getBody()->getContents(),true);
+            
+            foreach($tickets['showtimes']['showtime'] as $ticket){
+                $res = $client->get('/catalog/theaters/palladium/shows/'.$ticket['showId'].'.json');
+                $res = json_decode($res->getBody()->getContents(),true);
+                $films[] = $res['show'];
+            }
 
+            $res = $client->get('/user-account/loyality-cards/list',[ 'query' => [
+                'format'    => 'json',
+                'version'   => '3.34',
+                'agent'     => env('API_AGENT','testagent')
+            ]]);
+            $res = json_decode($res->getBody()->getContents(), true);
+            
             $arr = array(
                 'title'         => 'Личный кабинет',
                 'body_class'    => 'movie-details',
                 'tickets'       => $tickets,
                 'account'       => $account,
-                'profile'       => $profile
+                'profile'       => $profile,
+                'films'         => $films
             );
+
             return view('account',$arr);
         }
     }

@@ -43,29 +43,7 @@
 												</div>
 											</div>
 										</div>
-										<div class="ticket-row wow fadeInRightBig">
-											<div class="row">
-												<div class="col-6 col-sm-6 col-md-2 col-lg-1 col-xl-1 order-number-column">
-													<span class="tickets-code">5253356</span>
-												</div>
-												<div class="col-6 col-sm-6 col-md-2 col-lg-2 col-xl-1 clearfix date-column">
-													<span class="data-tickets">19.05.2018 <br> 00:19</span>
-												</div>
-												<div class="col-md-4 col-lg-4 col-xl-5 clearfix film-column">
-													<div class="img-wrapper">
-														<img src="img/avengers-small.jpg" alt="">
-													</div>
-													<span class="movie-name">Мстители: Война бесконечности (3D <br> RealD)<span class="years-allowed">16+</span></span>
-													<span class="date-sheduled">Воскресенье, 25 сентября    13:00    Зал «Лондон»</span>
-												</div>
-												<div class="col-md-2 col-lg-2 col-xl-2 summ-column">
-													<span class="ticket-price">170 <span class="uah">грн</span></span>
-												</div>
-												<div class="col-md-2 col-lg-3 col-xl-3">
-													<a href="#" class="tickets-link">Билеты</a>
-												</div>
-											</div>
-										</div>
+										<?php $i = 0; ?>
 										@foreach($tickets['orders']['invoice'] as $ticket)
 											<div class="ticket-row wow fadeInLeftBig">
 												<div class="row">
@@ -77,16 +55,21 @@
 													</div>
 													<div class="col-md-4 col-lg-4 col-xl-5 clearfix film-column">
 														<div class="img-wrapper">
-															<img src="img/avengers-small.jpg" alt="">
+															<img width="100px" src="{{ $films[$i]['posterUrl'] }}" alt="">
 														</div>
-														<span class="movie-name">Мстители: Война бесконечности (3D <br> RealD)<span class="years-allowed">16+</span></span>
-														<span class="date-sheduled">Воскресенье, 25 сентября    13:00    Зал «Лондон»</span>
+														<span class="movie-name">{{ $films[$i]['name'] }}<span class="years-allowed">{{ $films[$i]['ageLimit'] }}+</span></span>
+														<span class="date-sheduled">
+															{{ $Carbon->parse($tickets['showtimes']['showtime'][$i]['date'])->formatlocalized('%A, %d %B') }} {{ $Carbon->parse($tickets['showtimes']['showtime'][$i]['date'])->format('H:i') }}   </span>			
 													</div>
 													<div class="col-md-2 col-lg-2 col-xl-2 summ-column">
 														<span class="ticket-price">{{ $ticket['amount'] }} <span class="uah">грн</span></span>
 													</div>
 													<div class="col-md-2 col-lg-3 col-xl-3">
-														<a href="#" class="tickets-open">Открыть заказ</a>
+														@if($ticket['statusCode'] == 19)
+															<span class="payment-failed">Прострочена оплата </span>
+														@else
+															<a href="#" class="tickets-open">Открыть заказ</a>
+														@endif
 													</div>
 												</div>
 											</div>
@@ -164,11 +147,11 @@
 														</div>
 							        				</div>
 							        			</div>
-							        			<div class="col-md-2">
+{{-- 							        			<div class="col-md-2">
 							        				<div class="service-info">
 							        					<a href="#" class="remove-session"><img src="img/delete.png" alt="">Отключить</a>
 							        				</div>
-							        			</div>
+							        			</div> --}}
 							        		</div>
 							        	</div>
 							        @endforeach

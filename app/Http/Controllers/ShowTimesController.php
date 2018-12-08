@@ -86,14 +86,20 @@ class ShowTimesController extends Controller
             'format'        => 'json'
         ]]);
         $payee = json_decode($payee->getBody()->getContents(),true);
+        
+        if($request->p_type == 'card')
+            $payment_type = 'vkino-wayforpay-ticketservice';
+        else
+            $payment_type = 'palladium-bonus';
+
         $user = $auth->where('email',session('email'))->get();
         $user = $user[0];
-        //dd($payee);
+
 
         $res=$client->get('/sale',['query' => [
             'theater'       => env('API_THEATER','palladium'),
             'agent'         => env('API_AGENT','testagent'),
-            'payee'         => 'vkino-wayforpay-ticketservice',
+            'payee'         => $payment_type,
             'showtime'      => $showtime_id,
             'account-id'    => session('account_id'),
             'seats'         => $request->seats,
@@ -102,6 +108,12 @@ class ShowTimesController extends Controller
             'format'        => 'json'
         ]]);
         $res = json_decode($res->getBody()->getContents(),true);
-        dd($res);
+
+        $arr = array(
+            'title' => '',
+            'body_class' => '',
+            'form'  => $res['invoice']['checkoutForm']
+        );
+        return view('pay',$arr);
     }
 }

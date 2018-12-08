@@ -1,4 +1,6 @@
 @extends('layouts.main')
 @section('content')
-{!! $form !!}
+<div id="form_pay_submit">
+	{!! $form !!}
+</div>
 @endsection

@@ -110,3 +110,6 @@ $('#pay_card_form #email').on('input',function(){
         }
     }
 });
+$(document).ready(function(){
+    $('#form_pay_submit form').submit();
+});

@@ -72,28 +72,32 @@
 							    	<div class="tab_content">
 							        	<div class="tab_item">
 											<form action="/showtime/pay/{{ $showtime['showtime']['']['id'] }}" id="pay_card_form" method="POST">
+												<input name="p_type" type="hidden" value="card">
 												@csrf
 												<label for="email">Почта для получения билетов*</label>
 												<input id="email" name="email" type="email" value="{{ $user->email }}" class="confirmed">
 												<label for="tel">Получить коды билетов в SMS</label>
 												<input type="text" placeholder="(0xx) xxx xx xx" id="tel" value="{{ $user->phone }}" name="tel">
 												<button type="submit" class="pay" style="cursor: pointer;">Перейти к оплате</button>
-												<a href="#" class="agree-payment">Я соглашаюсь с правилами покупки</a>
+												{{-- <a href="#" class="agree-payment">Я соглашаюсь с правилами покупки</a> --}}
 												@foreach($seats as $seat)
 													<input type="hidden" value="{{ $seat }}" name="seats[]">
 												@endforeach
 											</form> 			
 								        </div>
 								        <div class="tab_item">
-											<form>  
+											<form action="/showtime/pay/{{ $showtime['showtime']['']['id'] }}" method="post">
+												@csrf
+											  	<input name="p_type" type="hidden" value="bonus">
 												<label>Почта для получения билетов*</label>
-												<input type="text" value="leshchenko.ld@gmail.com" class="confirmed">
-												<label class="declined">Номер бонусной карты*</label>
-												<input type="text" placeholder="xxxx xxxx xxxx x" class="declined">
+												<input type="text" value="{{ $user->email }}">
 												<label>Получить коды билетов в SMS</label>
-												<input type="text" placeholder="38 (xxx) xxx xx xx">
-												<button class="pay">Перейти к оплате</button>
-												<a href="#" class="agree-payment">Я соглашаюсь с правилами покупки</a>
+												<input type="text" placeholder="0xx xxx xx xx" value="{{ $user->phone }}">
+												<button type="submit" class="pay">Перейти к оплате</button>
+												{{-- <a href="#" class="agree-payment">Я соглашаюсь с правилами покупки</a> --}}
+												@foreach($seats as $seat)
+													<input type="hidden" value="{{ $seat }}" name="seats[]">
+												@endforeach
 											</form>
 								        </div>
 							    	</div>
