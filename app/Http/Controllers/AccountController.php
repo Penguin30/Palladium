@@ -7,7 +7,7 @@ use GuzzleHttp\Client;
 use Socialite;
 use Google_Client;
 use App\Auth;
-
+use \Picqer\Barcode\BarcodeGeneratorPNG;
 class AccountController extends Controller
 {   
     /*
@@ -33,7 +33,20 @@ class AccountController extends Controller
             return redirect('/account/login');
         }else{
             $user = $auth->where('email',session('email'))->get();
-            $user = $user[0];
+            $profile = array();
+            $films = array();
+            if(!empty($user[0])){
+                $user = $user[0];
+                $res = $client->get('/customer/get-profile',[ 'query' => [
+                    'format'    => 'json',
+                    'version'   => '3.34',
+                    'agent'     => env('API_AGENT','testagent'),
+                    'theater'   => env('API_THEATER','palladium'),
+                    'customer'  => $user->card,
+                    'code'      => $user->phone
+                ]]);
+                $profile = json_decode($res->getBody()->getContents(),true);
+            }
 
             session(['account_id' => $session['userAccount'][0]['id']]);
             $res = $client->get('/orders-by-account/all',[ 'query' => [
@@ -48,38 +61,42 @@ class AccountController extends Controller
                 'version'   => '3.34'
             ]]);
             $account = json_decode($res->getBody()->getContents(),true);
-
-            $res = $client->get('/customer/get-profile',[ 'query' => [
-                'format'    => 'json',
-                'version'   => '3.34',
-                'agent'     => env('API_AGENT','testagent'),
-                'theater'   => env('API_THEATER','palladium'),
-                'customer'  => $user->card,
-                'code'      => $user->phone
-            ]]);
-
-            $profile = json_decode($res->getBody()->getContents(),true);
-            
-            foreach($tickets['showtimes']['showtime'] as $ticket){
-                $res = $client->get('/catalog/theaters/palladium/shows/'.$ticket['showId'].'.json');
-                $res = json_decode($res->getBody()->getContents(),true);
-                $films[] = $res['show'];
-            }
+            if($tickets['orders']['count'] > 0)
+                foreach($tickets['showtimes']['showtime'] as $ticket){
+                    $res = $client->get('/catalog/theaters/palladium/shows/'.$ticket['showId'].'.json');
+                    $res = json_decode($res->getBody()->getContents(),true);
+                    $films[] = $res['show'];
+                }
 
             $res = $client->get('/user-account/loyality-cards/list',[ 'query' => [
                 'format'    => 'json',
                 'version'   => '3.34',
                 'agent'     => env('API_AGENT','testagent')
             ]]);
-            $res = json_decode($res->getBody()->getContents(), true);
-            
+            $cards = json_decode($res->getBody()->getContents(), true);
+            $cards_w_b = array();
+            if($cards['loyalityCards'])
+                foreach($cards['loyalityCards']['loyalityCard'] as $card){
+                    $res = $client->get('/customer/loyality-card/info',[ 'query' => [
+                        'format'                => 'json',
+                        'version'               => '3.34',
+                        'agent'                 => env('API_AGENT','testagent'),
+                        'number'                => $card['number'],
+                        'with-account-balance'  => 'y'
+                    ]]);                
+                    $res = json_decode($res->getBody()->getContents(),true);
+                    if($res['code'] == 1 && isset($res['accountBalance']))
+                        $cards_w_b[] = $res; 
+                }
+
             $arr = array(
                 'title'         => 'Личный кабинет',
                 'body_class'    => 'movie-details',
                 'tickets'       => $tickets,
                 'account'       => $account,
                 'profile'       => $profile,
-                'films'         => $films
+                'films'         => $films,
+                'cards'         => $cards_w_b
             );
 
             return view('account',$arr);
@@ -117,7 +134,10 @@ class AccountController extends Controller
         ]]);
         $result = json_decode($res->getBody()->getContents(),true);
         session(['email' => $email]);
-        return redirect('/account/auth');
+        if($request->type == 'ajax')
+            return $result['code'];
+        else
+            return redirect('/account/auth');
     }
 
     public function auth(){
@@ -144,7 +164,7 @@ class AccountController extends Controller
         }
     }
 
-    public function login_code(Request $request){
+    public function login_code(Request $request, Auth $auth){
         $device_id = env('DEVICE_ID');
         $validate = $request->validate([
             'code' => 'required'
@@ -164,12 +184,11 @@ class AccountController extends Controller
             'format'    => 'json'
         ]]);
         $res = json_decode($res->getBody()->getContents(),true);
-        if( $res['code'] == 1){
+
+        if( $res['code'] == 1)
             session(['token' => $res['auth']['session']['token']]);
-            return redirect('/account');
-        }else{
-            return $res['code'];
-        }
+
+        return $res['code'];
     }
 
     public function logout(){ 
@@ -189,16 +208,27 @@ class AccountController extends Controller
         return redirect('/');
     }
 
-    public function google_redirect()
-    {   
-        return Socialite::with('google')->redirect();
+    public function google_redirect(Google_Client $client)
+    {      
+        $client->setClientId(env('GOOGLE_APP_ID'));
+        $client->setClientSecret(env('GOOGLE_APP_SECRET'));
+        $client->setRedirectUri(env('GOOGLE_APP_URI'));
+        $client->addScope('https://www.googleapis.com/auth/userinfo.profile');
+        $client->setAccessType('offline');
+        $client->setIncludeGrantedScopes(true);
+        $client->setPrompt('select_account');
+        return redirect($client->createAuthUrl());
     }
 
-    public function google_callback()
+    public function google_callback(Google_Client $client)
     {   
-        $user   = Socialite::with('google')->user();
-        $token  = $user->accessTokenResponseBody;
-        dd($token);
+        $client->setClientId(env('GOOGLE_APP_ID'));
+        $client->setClientSecret(env('GOOGLE_APP_SECRET'));
+        $client->setRedirectUri(env('GOOGLE_APP_URI'));
+        $client->addScope('https://www.googleapis.com/auth/userinfo.profile');
+        $token = $client->fetchAccessTokenWithAuthCode($_GET['code']);
+        //dd($token);
+        $token = $token['access_token'];
         if(!empty($token)){
             $device_id = env('DEVICE_ID');
             $client = new Client([
@@ -210,6 +240,38 @@ class AccountController extends Controller
                 'version'       => '3.34',
                 'agent'         => env('API_AGENT','testagent'),
                 'token'         => $token,
+                'format'        => 'json',
+                'auth-provider' => 'google-palladium'
+            ]]);
+
+            $res = json_decode($res->getBody()->getContents(),true);
+            dd($res);
+        }
+    }
+
+    public function facebook_redirect(){
+
+        return Socialite::driver('facebook')->redirect();
+
+    }
+
+    public function facebook_callback()
+    {   
+
+        $user = Socialite::driver('facebook')->user();
+        $token = $user->token;
+        dd($user);
+        if(!empty($token)){
+            $device_id = env('DEVICE_ID');
+            $client = new Client([
+                'base_uri'  => 'https://api.vkino.com.ua',
+                'auth'      => [env('API_LOGIN', 'testagent'), env('API_PASS', 'testagent')],
+                'headers'   => ['device-id' => $device_id]
+            ]);
+            $res = $client->post('/auth/facebook/token',['query' => [
+                'version'       => '3.34',
+                'agent'         => env('API_AGENT','testagent'),
+                'token'         => $token,
                 'format'        => 'json'
             ]]);
 
@@ -217,16 +279,6 @@ class AccountController extends Controller
 
             dd($res);
         }
-    }
-
-    public function facebook_redirect(){
-        return Socialite::driver('facebook')->redirect();
-    }
-
-    public function facebook_callback()
-    {   
-
-        $leUser = Socialite::driver('facebook')->user();
 
     }
 
@@ -259,5 +311,61 @@ class AccountController extends Controller
         $auth->email = session('email');
         $auth->save();
         return redirect('/account');
-    }   
+    }
+
+    public function register_card(Request $request){
+        $valid = $request->validate([
+            'num' => 'required',
+            'tel' => 'required'
+        ]);
+        $num = $valid['num'];
+        $tel = $valid['tel'];
+        $client = new Client([
+            'base_uri'  => 'https://api.vkino.com.ua',
+            'auth'      => [env('API_LOGIN', 'testagent'), env('API_PASS', 'testagent')],
+            'headers'   => ['auth-token' => session('token'),'device-id' => env('DEVICE_ID')]
+        ]);
+
+        $res = $client->post('/customer/loyality-card/store',['query' => [
+            'agent'     => env('API_AGENT','testagent'),
+            'theater'   => env('API_THEATER','palladium'),
+            'title'     => 'card',
+            'number'    => $num,
+            'format'    => 'json'
+        ]]);
+        $added = json_decode($res->getBody()->getContents(),true);
+        if($added['code'] == 1){
+            $res = $client->post('/customer/loyality-card/authorize',['query' => [
+                'agent'     => env('API_AGENT','testagent'),
+                'theater'   => env('API_THEATER','palladium'),
+                'tel'       => $tel,
+                'number'    => $num,
+                'format'    => 'json'
+            ]]);
+            $activate = json_decode($res->getBody()->getContents(),true);
+            return $activate['code'];
+        }else{
+            return $added['code'];
+        }
+    }
+
+    public function delete_card(Request $request){
+        $valid = $request->validate([
+            'c_num' => 'required'
+        ]);
+        $num = $valid['c_num'];
+
+        $client = new Client([
+            'base_uri'  => 'https://api.vkino.com.ua',
+            'auth'      => [env('API_LOGIN', 'testagent'), env('API_PASS', 'testagent')],
+            'headers'   => ['auth-token' => session('token'),'device-id' => env('DEVICE_ID')]
+        ]);
+
+        $res = $client->post('/user-account/loyality-cards/delete',['query' => [
+            'agent'     => env('API_AGENT','testagent'),
+            'number'    => $num,
+            'format'    => 'json'
+        ]]);
+        return redirect('/account');
+    }
 }

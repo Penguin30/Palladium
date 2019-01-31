@@ -4,7 +4,7 @@
 <div class="fix-overflow-all">			
 	<section class="payment payment-seats">
 		<div class="container">
-			<a href="{{ \Request::server('HTTP_REFERER') }}" class="get-back"><img src="{{ asset('img/arrow-back.png') }}" alt="">Назад</a>
+			<a href="/showtime/{{ $showtime['showtime']['']['id'] }}" class="get-back"><img src="{{ asset('img/arrow-back.png') }}" alt="">Назад</a>
 			<div class="payment-details payment-way">
 				<div class="row">
 					<div class="col-sm-6">
@@ -106,26 +106,52 @@
 						</div> 
 					@else
 						<div class="col-md-6">
-							<div class="autorization">
+							<div class="autorization" id="email_get_form">
 								<div class="heading">
 									<h3>Авторизация</h3>
 								</div>
 								<div class="mail">
 									<h4>С помощью почты</h4>
 									<p>На почту придет одноразовый пароль</p>
-									<form>
-										<input type="text" placeholder="Ваш Email">
-										<button id="send"><img src="img/sendmail.png" alt=""></button>
+									<form method="POST" id="login_payment_form" action="javascript:void(0)">
+										@csrf
+										<input type="hidden" name="type" value="ajax">
+										<input type="email" name="email" placeholder="Ваш Email">
+										<button id="send" type="submit"><img src="{{ asset('img/sendmail.png') }}" alt=""></button>
 									</form>
 								</div>
 								<div class="or">
 									<span>Или</span>
 								</div>
 								<div class="social-auth">
-									<a href="#" class="fb-a"><img src="img/facebook-aut.png" alt="">Facebook</a>
-									<a href="#" class="g-plus"><img src="img/g-plus-aut.png" alt="">Google</a>
+									<a href="#" class="fb-a"><img src="{{ asset('img/facebook-aut.png') }}" alt="">Facebook</a>
+									<a href="#" class="g-plus"><img src="{{ asset('img/g-plus-aut.png') }}" alt="">Google</a>
 								</div>
-							</div>
+							</div>	
+							<div class="autorization" style="display: none;" id="code_login_form">
+								<div class="heading">
+									<h3>Авторизация</h3>
+								</div>
+								<div class="mail">
+									<p class="mail-pass">Одноразовый пароль отправлен<br>
+									на адрес
+									<span class="email_user"></span>
+									</p>
+									<form class="pass-form" id="login_form_code" action="javascript:void(0)" method="POST">
+										@csrf
+										<input type="hidden" name="type" value="ajax">
+										<input type="text" name="code" placeholder="Пароль из письма">
+										<button type="submit" id="send">ОК</button>
+									</form>
+								</div>
+								<div class="or">
+									<span>Или</span>
+								</div>
+								<div class="social-auth">
+									<a href="#" class="fb-a"><img src="{{ asset('img/facebook-aut.png') }}" alt="">Facebook</a>
+									<a href="#" class="g-plus"><img src="{{ asset('img/g-plus-aut.png') }}" alt="">Google</a>
+								</div>
+							</div>						
 						</div> 
 					@endif
 				</div>

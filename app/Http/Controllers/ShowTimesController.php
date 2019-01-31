@@ -62,7 +62,8 @@ class ShowTimesController extends Controller
             return redirect('/showtime/'.$showtime_id);
         }
         $user = $auth->where('email',session('email'))->get();
-        $user = $user[0];
+        if(!empty($user[0]))
+            $user = $user[0];
         $arr = array(
             'title'         => 'Покупка билетов на '.$res['show']['name'],
             'body_class'    => 'movie-details',

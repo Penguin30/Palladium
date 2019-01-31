@@ -30,7 +30,7 @@
 									</ul>
 								</div>
 							</div>
-							<a href="#" class="play-button"><img class="play-sprite" src="{{ asset('img/play-sprite.png') }}" alt=""><img class="play-sprite-retina" src="{{ asset('img/play-sprite-retina.png') }}" alt=""></a>
+							<a href="https://www.youtube.com/watch?v={{ $film['show']['youtubeVideoId'] }}" class="play-button"><img class="play-sprite" src="{{ asset('img/play-sprite.png') }}" alt=""><img class="play-sprite-retina" src="{{ asset('img/play-sprite-retina.png') }}" alt=""></a>
 						</div>
 					</div>
 				@endif
@@ -71,7 +71,7 @@
 									<div class="soon-item">
 										<div class="image">
 											<img class="poster-img" src="{{ $film['posterUrl'] }}" alt="">
-											<a href="#" class="play-button"><img class="soon-play-image" src="{{ asset('img/play-sprite.png') }}" alt=""><img class="soon-play-image-retina" src="{{ asset('img/play-sprite-retina.png') }}" alt=""></a>
+											<a href="https://www.youtube.com/watch?v={{ $film['youtubeVideoId'] }}" class="play-button"><img class="soon-play-image" src="{{ asset('img/play-sprite.png') }}" alt=""><img class="soon-play-image-retina" src="{{ asset('img/play-sprite-retina.png') }}" alt=""></a>
 											<span class="movie-name"><a href="/films/{{ $film['alias'] }}">{{ $film['name'] }}</a></span>
 										</div>
 										<div class="info">
@@ -79,14 +79,14 @@
 												<div class="col">
 													<span class="from">c {{ $Carbon::parse($film['releaseDate'])->formatLocalized('%d %b') }}</span>
 												</div>
-												<div class="col-3">
+												{{-- <div class="col-3">
 													<div class="text-right">
 														<a href="#" class="buy-ticket">
 															<img class="ticket-icon" src="{{ asset('img/ticket-icon.png') }}" alt=""><img class="ticket-icon-retina" src="{{ asset('img/ticket-icon-retina.png') }}" alt="">
 															<span>Билеты в продаже</span>
 														</a>
 													</div>
-												</div>
+												</div> --}}
 											</div>
 										</div>
 									</div>

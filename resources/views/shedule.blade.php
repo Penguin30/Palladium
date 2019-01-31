@@ -43,7 +43,7 @@ $Carbon::setLocale('ru');
 											<div class="soon-item">
 												<div class="image">
 													<img class="poster-img" src="{{ $fm['show']['posterUrl'] }}" alt="">
-													<a href="#" class="play-button"><span><img class="play-sprite" src="{{ asset('img/play-sprite.png') }}" alt="" style="top: 1px;"><img class="play-sprite-retina" src="{{ asset('img/play-sprite-retina.png') }}" alt="" style="top: 1px;"></span></a>
+													<a href="https://www.youtube.com/watch?v={{ $fm['show']['youtubeVideoId'] }}" class="play-button"><span><img class="play-sprite" src="{{ asset('img/play-sprite.png') }}" alt="" style="top: 1px;"><img class="play-sprite-retina" src="{{ asset('img/play-sprite-retina.png') }}" alt="" style="top: 1px;"></span></a>
 													<span class="movie-name"><a href="/films/{{ $fm['show']['']['alias'] }}">{{ $fm['show']['name'] }}</a>{{-- <span class="till">до </span> --}}<span class="years">{{ $fm['show']['ageLimit'] }}+</span></span>
 													<ul class="sheduled-sessions">
 														@foreach($fm['showtimes']['by-date']['date'] as $time)
@@ -79,7 +79,7 @@ $Carbon::setLocale('ru');
 								<div class="soon-item">
 									<div class="image">
 										<img class="poster-img" src="{{ $film['posterUrl'] }}" alt="">
-										<a href="https://www.youtube.com/watch?v=oN_1xiJ-Mk4" class="play-button"><span><img src="{{ asset('img/play-sprite.png') }}" alt=""></span></a>
+										<a href="https://www.youtube.com/watch?v={{ $film['youtubeVideoId'] }}" class="play-button"><span><img src="{{ asset('img/play-sprite.png') }}" alt=""></span></a>
 										<span class="movie-name"><a href="/films/{{ $film['alias'] }}">{{ $film['name'] }}</a></span>
 									</div>
 									<div class="info">
@@ -87,14 +87,14 @@ $Carbon::setLocale('ru');
 											<div class="col">
 												<span class="from">с {{ $Carbon->parse($film['releaseDate'])->formatLocalized('%d %b')}}</span>
 											</div>
-											<div class="col-3">
+											{{-- <div class="col-3">
 												<div class="text-right">
 													<a href="#" class="buy-ticket">
 														<img src="{{ asset('img/ticket-icon.png') }}" alt="">
 														<span>Билеты в продаже</span>
 													</a>
 												</div>
-											</div>
+											</div> --}}
 										</div>
 									</div>
 								</div>

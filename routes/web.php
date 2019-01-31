@@ -22,6 +22,10 @@ Route::get('/vip-hall', 'HallController@vip');
 Route::get('/vip-film/{slug}', 'HallController@film');
 Route::post('/vip-film/search', 'HallController@search');
 
+Route::group([ 'prefix' => 'tickets'], function(){
+    Route::get('/{order_id}/{auth_code}', 'TicketsController@index');
+});
+
 Route::group([ 'prefix' => 'showtime'], function(){
     Route::get('/{showtime_id}', 'ShowTimesController@index');
     Route::post('/order/{showtime_id}', 'ShowTimesController@order');
@@ -57,6 +61,9 @@ Route::group(['prefix' => 'account'], function () {
     Route::get('/logout', 'AccountController@logout');
 
     Route::post('/create_profile', 'AccountController@create_profile');
+
+    Route::post('/card/register', 'AccountController@register_card');
+    Route::post('/card/delete', 'AccountController@delete_card');
 });
 
 

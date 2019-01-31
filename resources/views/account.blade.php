@@ -68,7 +68,7 @@
 														@if($ticket['statusCode'] == 19)
 															<span class="payment-failed">Прострочена оплата </span>
 														@else
-															<a href="#" class="tickets-open">Открыть заказ</a>
+															<a href="/tickets/{{ $ticket['number'] }}/{{ $ticket['authCode'] }}" class="tickets-open">Открыть заказ</a>
 														@endif
 													</div>
 												</div>
@@ -82,7 +82,7 @@
 									<div class="input-wrappper text-center">
 										<label>Основной Email/Логин</label>
 										<div class="input">
-											<input type="text" disabled placeholder="email@email.email" value="{{ $profile['customer']['email'] }}">
+											<input type="text" disabled placeholder="email@email.email" value="@if($profile){{ $profile['customer']['email'] }}@else {{ session('email') }} @endif">
 										</div>
 									</div>
 									<form action="/account/create_profile" method="POST">
@@ -90,11 +90,12 @@
 										<div class="input-wrappper text-center">
 											<label>Контактный телефон</label>
 											<div class="input">
-												<input @if($profile['customer']['phoneCell']) disabled @endif required name="phone" type="text" placeholder="0661111111" value="0{{ $profile['customer']['phoneCell'] }}">
+												<input @if($profile && $profile['customer']['phoneCell']) disabled @endif required name="phone" type="text" placeholder="0661111111" value="@if($profile)0{{ $profile['customer']['phoneCell'] }}@endif">
 											</div>
 										</div>
+
 										<div class="input-wrappper text-center">
-											@if(!$profile['customer']['phoneCell'])
+											@if(!$profile || !$profile['customer']['phoneCell'])
 												<button type="submit" style="border:none; outline: none;cursor: pointer;" class="save">Сохранить</button>
 											@endif
 										</div>
@@ -122,28 +123,28 @@
 						        			</div>
 						        		</div>
 						        	</div>
-						        	@foreach($account['auth']['profiles']['profile'] as $profile)
+						        	@foreach($account['auth']['profiles']['profile'] as $prof)
 							        	<div class="table-item">
 							        		<div class="row">
 							        			<div class="col-md-2 col-lg-1">
 							        				<div class="service default-service">
-							        					@if($profile['provider'] == 'email')
-							        						<img src="img/envelope.png" alt="">
-							        					@elseif($profile['provider'] == 'facebook')
+							        					@if($prof['provider'] == 'email')
+							        						<img src="{{ asset('img/envelope.png') }}" alt="">
+							        					@elseif($prof['provider'] == 'facebook')
 							        						<img src="img/facebook-aut.png" alt="">
 							        					@endif
 							        				</div>
 							        			</div>
 							        			<div class="col-md-4">
 							        				<div class="service-info">
-							        					<span class="e-mail-name">{{ $profile['displayName'] }}</span>
+							        					<span class="e-mail-name">{{ $prof['displayName'] }}</span>
 							        				</div>
 							        			</div>
 							        			<div class="col-md-4 col-lg-5">
 							        				<div class="service-info">
 							        					<div class="e-mail-name">palladium-cinema.com.ua</div>
 							        					<div class="e-mail-name">
-														{{ $Carbon->parse($profile['created'])->format('d.m.Y в H:i') }}
+														{{ $Carbon->parse($prof['created'])->format('d.m.Y в H:i') }}
 														</div>
 							        				</div>
 							        			</div>
@@ -157,65 +158,49 @@
 							        @endforeach
 						        </div>
 					   		</div>
-						<div class="tab_item">
+							<div class="tab_item">
 								<div class="cards-wrapper">
-									<div class="row added-cards justify-content-center">
-										<div class="col-lg-12 col-xl-6 wow fadeInUpBig">
-											<div class="bonus-card-template centered first-bonus-card">
-												<form>
-													<label>Номер бонусной карты</label>
-													<input type="text" class="confirmed" value="1234 5678 9102 3">
-													<label>Телефон, зарегистрированный на эту карту</label>
-													<input type="text" class="confirmed" value="38 (066) 210 54 55">
-													<label class="on-your">На вашем счету <br>
-														<span class="bonus-number"><span class="val">540</span> бонусов</span>
-													</label>
-												</form>
+									@foreach($cards as $card)
+										<div class="row added-cards justify-content-center">
+											<div class="col-lg-12 col-xl-6 wow fadeInUpBig">
+												<div class="bonus-card-template centered first-bonus-card">
+													<form method="POST" action="/account/card/delete">
+														@csrf
+														<label>Номер бонусной карты</label>
+														<input type="hidden" value="{{ $card['loyalityCard'][0]['number'] }}" name="c_num">
+														<input disabled type="text" class="confirmed" value="{{ $card['loyalityCard'][0]['number'] }}">
+														<label class="on-your">На вашем счету <br>
+															<span class="bonus-number"><span class="val">{{ $card['accountBalance']['bonusesAmount'] }}</span> бонусов</span>
+														</label>
+														<div class="text-center responsive-fix">
+															<button class="delete-card" type="submit" style="cursor: pointer;"><img class="delete-card-icon" src="{{ asset('img/delete.png') }}" alt=""><img class="delete-card-icon-retina" src="{{ asset('img/delete-retina.png') }}" alt="">Удалить карту</button>
+														</div>
+													</form>
+												</div>
 											</div>
-											<div class="text-center responsive-fix">
-												<span class="delete-card"><img class="delete-card-icon" src="{{ asset('img/delete.png') }}" alt=""><img class="delete-card-icon-retina" src="{{ asset('img/delete-retina.png') }}" alt="">Удалить карту</span>
-											</div>
-										</div>
-										<div class="col-lg-12 col-xl-6 wow fadeInUpBig">
-											<div class="bonus-card-template centered second-bonus-card">
-												<form>
-													<label>Номер бонусной карты</label>
-													<input type="text" class="confirmed" value="1234 5678 9102 3">
-													<label>Телефон, зарегистрированный на эту карту</label>
-													<input type="text" class="confirmed" value="38 (066) 210 54 55">
-													<label class="on-your">На вашем счету <br>
-														<span class="bonus-number"><span class="val">540</span> бонусов</span>
-													</label>
-												</form>
-											</div>
-											<div class="text-center">
-												<span class="delete-card"><img class="delete-card-icon" src="{{ asset('img/delete.png') }}" alt=""><img class="delete-card-icon-retina" src="{{ asset('img/delete-retina.png') }}" alt="">Удалить карту</span>
-											</div>
-										</div>
-									</div>
+										</div>		
+									@endforeach			
 									<div class="row new-card d-none justify-content-center">
 										<div class="col-lg-12 col-xl-6 wow fadeInUpBig">
 											<div class="bonus-card-template centered third-bonus-card">
-												<form>
-													<label>Номер бонусной карты</label>
-													<input type="text" class="confirmed" value="1234 5678 9102 3">
-													<label>Телефон, зарегистрированный на эту карту</label>
-													<input type="text" class="confirmed" value="38 (066) 210 54 55">
-													<label class="on-your">На вашем счету <br>
-														<span class="bonus-number"><span class="val">540</span> бонусов</span>
-													</label>
+												<form action="javascript:void(0)" method="POST" id="add_card_form">
+													@csrf
+													<label for="c_num">Номер бонусной карты</label>
+													<input type="text" id="c_num" name="num" placeholder="xxxx xxxx xxxx">
+													<label for="tel">Телефон, зарегистрированный на эту карту</label>
+													<input type="text" class="confirmed" 
+													name="tel" id="tel" value="@if($profile)0{{ $profile['customer']['phoneCell'] }}@endif">
+													<div class="text-center responsive-fix">
+														<button class="delete-card" style="cursor: pointer;">Добавить карту</button>
+													</div>
 												</form>
-											</div>
-											<div class="text-center">
-												<span class="add-card"><img class="delete-card-icon" src="{{ asset('img/delete.png') }}" alt=""><img class="delete-card-icon-retina" src="{{ asset('img/delete-retina.png') }}" alt="">Добавить карту</span>
 											</div>
 										</div>
 									</div>
-
 									<div class="add-card">
 										<div class="row">
 											<div class="col-md-12">
-												<a href="#" id="add-bonus-card"><img class="addcart-icon" src="{{ asset('img/addcart.png') }}" alt=""><img class="addcart-icon-retina" src="{{ asset('img/addcart-retina.png') }}" alt="">Добавить бонусную карту</a>
+												<a href="javascript:void(0)" id="add-bonus-card"><img class="addcart-icon" src="{{ asset('img/addcart.png') }}" alt=""><img class="addcart-icon-retina" src="{{ asset('img/addcart-retina.png') }}" alt="">Добавить бонусную карту</a>
 											</div>
 										</div>
 									</div>

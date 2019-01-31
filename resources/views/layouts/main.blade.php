@@ -22,7 +22,7 @@
 	<meta name="theme-color" content="#CCB6A6">
 	<!-- Custom Browsers Color End -->
 	<meta name="viewport" content="initial-scale=1.0, width=device-width, user-scalable=no">
-
+	
 	<link rel="stylesheet" href="{{ asset('css/main.min.css') }}">
 	<link rel="stylesheet" href="{{ asset('css/custom.css') }}">
 </head>
@@ -312,8 +312,8 @@
 		<a href="{{ setting('sayt.tel_shop_link') }}" target="_blank"><img class="cashier-logo" src="{{ asset('img/telegram-icon-retina.png') }}" alt="">
 		<span>Telegram кассир</span></a>
 	</div>	
-	<script src="{{ asset('js/scripts.min.js') }}"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.15/jquery.mask.min.js"></script>
+	<script src="{{ asset('js/scripts.min.js') }}"></script>
 	<script src="{{ asset('js/ajax.js') }}"></script>
 </body>
 </html>
