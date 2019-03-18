@@ -8,9 +8,9 @@
 				<div class="bonus-inner">
 					<div class="wrapper">
 					    <div class="tabs">
-					        <span class="tab {{ ($_GET['tab'] == 'tickets' || $_GET['tab'] == '') ? 'active' : '' }}">Мои билеты</span>
-					        <span class="tab {{ ($_GET['tab'] == 'profile') ? 'active' : '' }}">Профиль</span>
-					        <span class="tab {{ ($_GET['tab'] == 'profile') ? 'active' : '' }}">Бонусная карта</span>      
+					        <span class="tab {{ (!isset($_GET['tab']) || $_GET['tab'] == 'tickets' || $_GET['tab'] == '') ? 'active' : '' }}">Мои билеты</span>
+					        <span class="tab {{ (isset($_GET['tab']) && $_GET['tab'] == 'profile') ? 'active' : '' }}">Профиль</span>
+					        <span class="tab {{ (isset($_GET['tab']) && $_GET['tab'] == 'profile') ? 'active' : '' }}">Бонусная карта</span>      
 					    </div>
 					</div>
 				</div>
