@@ -5,6 +5,7 @@
 	<section class="slider fix-home wow fadeInRightBig">
 		<div class="slider-home">
 			@foreach($films_actual as $film)
+				@dd($film)
 				@if($Carbon->parse($film['showtime']['']['date'])->format('Y-m-d') == $Carbon->now()->format('Y-m-d'))
 					<div>
 						<div class="slide">

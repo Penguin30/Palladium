@@ -210,3 +210,16 @@ $('#login_form_code').submit(function(){
         }
     });
 });
+
+function PrintElem(elem){
+    Popup($(elem).html());
+}
+function Popup(data){
+    var mywindow = window.open('', 'my div', 'height=400,width=600');
+    mywindow.document.write(data);
+    mywindow.document.close();
+    mywindow.focus();
+    mywindow.print();
+    mywindow.close();
+    return true;
+}

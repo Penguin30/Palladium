@@ -4,14 +4,28 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
-
+use Validator;
 class FormController extends Controller
 { 
 	public function index(Request $request){
+        $messages = [
+            'min' =>  'Сообщение меньше :min символов.',
+        ];
+        $rules = array(
+            'name'  => 'required',
+            'email' => 'required|email',
+            'msg'   => 'required|min:6'
+        );
+        $validator = Validator::make($request->all(), $rules, $messages);
+        if ($validator->fails()) {
+            return redirect($request->server('HTTP_REFERER'))
+                ->withErrors($validator)
+                ->withInput();
+        }
 		$valid = $request->validate([
 			'name'	=> 'required',
-            'email' => 'required',
-            'msg'	=> 'required'
+            'email' => 'required|email',
+            'msg'	=> 'required|min:6'
         ]);
         $name 	= $valid['name'];
         $email 	= $valid['email'];
@@ -30,7 +44,8 @@ class FormController extends Controller
     		'format'		=> 'json'	
     	]]);
     	$res = json_decode($res->getBody()->getContents(),true);   
-    	if($res['code'] == 1)
-    		return redirect($request->server('HTTP_REFERER'));    	
+
+        return redirect($request->server('HTTP_REFERER')); 
+
 	}
 }

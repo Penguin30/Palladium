@@ -24,6 +24,12 @@ Route::post('/vip-film/search', 'HallController@search');
 
 Route::group([ 'prefix' => 'tickets'], function(){
     Route::get('/{order_id}/{auth_code}', 'TicketsController@index');
+    Route::post('return', 'TicketsController@return');
+});
+
+Route::group([ 'prefix' => 'order'], function(){
+    Route::get('/{order_id}/{auth_code}', 'TicketsController@order_pay');
+    Route::post('/pay/{order_id}', 'TicketsController@sale_order');
 });
 
 Route::group([ 'prefix' => 'showtime'], function(){

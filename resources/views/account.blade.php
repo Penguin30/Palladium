@@ -8,9 +8,9 @@
 				<div class="bonus-inner">
 					<div class="wrapper">
 					    <div class="tabs">
-					        <span class="tab">Мои билеты</span>
-					        <span class="tab">Профиль</span>
-					        <span class="tab">Бонусная карта</span>      
+					        <span class="tab {{ ($_GET['tab'] == 'tickets' || $_GET['tab'] == '') ? 'active' : '' }}">Мои билеты</span>
+					        <span class="tab {{ ($_GET['tab'] == 'profile') ? 'active' : '' }}">Профиль</span>
+					        <span class="tab {{ ($_GET['tab'] == 'profile') ? 'active' : '' }}">Бонусная карта</span>      
 					    </div>
 					</div>
 				</div>
@@ -44,7 +44,8 @@
 											</div>
 										</div>
 										<?php $i = 0; ?>
-										@foreach($tickets['orders']['invoice'] as $ticket)
+										@foreach($tickets['showtimes']['showtime'] as $film)
+										@php $ticket = $tickets['orders']['invoice'][$film['orderNumber']]; @endphp
 											<div class="ticket-row wow fadeInLeftBig">
 												<div class="row">
 													<div class="col-6 col-sm-6 col-md-2 col-lg-1 col-xl-1 order-number-column">
@@ -53,13 +54,13 @@
 													<div class="col-6 col-sm-6 col-md-2 col-lg-2 col-xl-1 date-column">
 														<span class="data-tickets">{{ $Carbon->parse($ticket['created'])->format('d.m.Y') }}<br> {{ $Carbon->parse($ticket['created'])->format('H:i') }}</span>
 													</div>
-													<div class="col-md-4 col-lg-4 col-xl-5 clearfix film-column">
+													<div class="col-md-4 col-lg-4 col-xl-5 clearfix film-column">				
 														<div class="img-wrapper">
-															<img width="100px" src="{{ $films[$i]['posterUrl'] }}" alt="">
+															<img width="100px" src="{{ $films[$film['orderNumber']]['posterUrl'] }}" alt="">
 														</div>
-														<span class="movie-name">{{ $films[$i]['name'] }}<span class="years-allowed">{{ $films[$i]['ageLimit'] }}+</span></span>
+														<span class="movie-name">{{ $films[$film['orderNumber']]['name'] }}<span class="years-allowed">{{ $films[$film['orderNumber']]['ageLimit'] }}+</span></span>
 														<span class="date-sheduled">
-															{{ $Carbon->parse($tickets['showtimes']['showtime'][$i]['date'])->formatlocalized('%A, %d %B') }} {{ $Carbon->parse($tickets['showtimes']['showtime'][$i]['date'])->format('H:i') }}   </span>			
+															{{ $Carbon->parse($film['date'])->formatlocalized('%A, %d %B') }} {{ $Carbon->parse($film['date'])->format('H:i') }}   </span>			
 													</div>
 													<div class="col-md-2 col-lg-2 col-xl-2 summ-column">
 														<span class="ticket-price">{{ $ticket['amount'] }} <span class="uah">грн</span></span>
@@ -67,8 +68,12 @@
 													<div class="col-md-2 col-lg-3 col-xl-3">
 														@if($ticket['statusCode'] == 19)
 															<span class="payment-failed">Прострочена оплата </span>
+														@elseif($ticket['status'] == 'Canceled')
+															<span class="payment-failed">Билеты были возвращены </span>	
+														@elseif($ticket['status'] == 'AwaitingForPayment')
+															<a href="/order/{{ $ticket['number'] }}/{{ $ticket['authCode'] }}" class="tickets-open">Открыть заказ</a>
 														@else
-															<a href="/tickets/{{ $ticket['number'] }}/{{ $ticket['authCode'] }}" class="tickets-open">Открыть заказ</a>
+															<a href="/tickets/{{ $ticket['number'] }}/{{ $ticket['authCode'] }}" class="tickets-link">Билеты</a>
 														@endif
 													</div>
 												</div>
@@ -82,7 +87,8 @@
 									<div class="input-wrappper text-center">
 										<label>Основной Email/Логин</label>
 										<div class="input">
-											<input type="text" disabled placeholder="email@email.email" value="@if($profile){{ $profile['customer']['email'] }}@else {{ session('email') }} @endif">
+											
+											<input type="text" disabled placeholder="email@email.email" value="@if($profile['code'] == 1){{ $profile['customer']['email'] }}@elseif($account['userAccount'][0]['email']){{ $account['userAccount'][0]['email'] }}@else {{ session('email') }} @endif">
 										</div>
 									</div>
 									<form action="/account/create_profile" method="POST">
@@ -90,23 +96,23 @@
 										<div class="input-wrappper text-center">
 											<label>Контактный телефон</label>
 											<div class="input">
-												<input @if($profile && $profile['customer']['phoneCell']) disabled @endif required name="phone" type="text" placeholder="0661111111" value="@if($profile)0{{ $profile['customer']['phoneCell'] }}@endif">
+												<input @if($profile['code'] == 1 && $profile && $profile['customer']['phoneCell']) disabled @endif required name="phone" type="text" placeholder="0661111111" value="@if($profile && $profile['code'] == 1)0{{ $profile['customer']['phoneCell'] }}@endif">
 											</div>
 										</div>
 
 										<div class="input-wrappper text-center">
-											@if(!$profile || !$profile['customer']['phoneCell'])
+											@if($profile['code'] == 1 &&  !$profile['customer']['phoneCell'])
 												<button type="submit" style="border:none; outline: none;cursor: pointer;" class="save">Сохранить</button>
 											@endif
 										</div>
 									</form>
-									<div class="input-wrappper text-center">
+									{{-- <div class="input-wrappper text-center">
 										<label>Подключить аккаунт</label>
 										<div class="soc-accs">
 											<a href="#" class="fb-a"><img src="img/facebook-aut.png" alt="">Facebook</a>
 											<a href="#" class="g-plus"><img src="img/g-plus-aut.png" alt="">Google</a>
 										</div>
-									</div>
+									</div> --}}
 						        </div>
 						        <div class="active-sessions text-left wow fadeInUpBig">
 						        	<h3>Активные подключения</h3>
@@ -130,8 +136,10 @@
 							        				<div class="service default-service">
 							        					@if($prof['provider'] == 'email')
 							        						<img src="{{ asset('img/envelope.png') }}" alt="">
-							        					@elseif($prof['provider'] == 'facebook')
-							        						<img src="img/facebook-aut.png" alt="">
+							        					@elseif($prof['provider'] == 'facebook-palladium')
+							        						<img src="{{ asset('img/facebook-aut.png') }}" alt="">
+							        					@elseif($prof['provider'] == 'google-palladium')
+							        						<img src="{{ asset('img/g-plus-aut.png') }}" alt="">
 							        					@endif
 							        				</div>
 							        			</div>
@@ -189,7 +197,7 @@
 													<input type="text" id="c_num" name="num" placeholder="xxxx xxxx xxxx">
 													<label for="tel">Телефон, зарегистрированный на эту карту</label>
 													<input type="text" class="confirmed" 
-													name="tel" id="tel" value="@if($profile)0{{ $profile['customer']['phoneCell'] }}@endif">
+													name="tel" id="tel" value="@if($profile['code'] == 1)0{{ $profile['customer']['phoneCell'] }}@endif">
 													<div class="text-center responsive-fix">
 														<button class="delete-card" style="cursor: pointer;">Добавить карту</button>
 													</div>

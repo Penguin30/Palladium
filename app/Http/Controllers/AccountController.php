@@ -12,7 +12,7 @@ class AccountController extends Controller
 {   
     /*
     *
-    * Go to aacount
+    * Go to account
     *
     */
     public function index(Auth $auth){
@@ -49,7 +49,7 @@ class AccountController extends Controller
             }
 
             session(['account_id' => $session['userAccount'][0]['id']]);
-            $res = $client->get('/orders-by-account/all',[ 'query' => [
+            $res = $client->get('/orders-by-account',[ 'query' => [
                 'account_id' => $session['userAccount'][0]['id'],
                 'agent'      => env('API_AHGENT','testagent'),
                 'format'     => 'json'
@@ -65,7 +65,7 @@ class AccountController extends Controller
                 foreach($tickets['showtimes']['showtime'] as $ticket){
                     $res = $client->get('/catalog/theaters/palladium/shows/'.$ticket['showId'].'.json');
                     $res = json_decode($res->getBody()->getContents(),true);
-                    $films[] = $res['show'];
+                    $films[$ticket['orderNumber']] = $res['show'];
                 }
 
             $res = $client->get('/user-account/loyality-cards/list',[ 'query' => [
@@ -185,8 +185,9 @@ class AccountController extends Controller
         ]]);
         $res = json_decode($res->getBody()->getContents(),true);
 
-        if( $res['code'] == 1)
-            session(['token' => $res['auth']['session']['token']]);
+        if( $res['code'] == 1){
+            session(['token' => $res['auth']['session']['token'],'account_id' => $res['userAccount'][0]['id']]);
+        }
 
         return $res['code'];
     }
@@ -212,8 +213,9 @@ class AccountController extends Controller
     {      
         $client->setClientId(env('GOOGLE_APP_ID'));
         $client->setClientSecret(env('GOOGLE_APP_SECRET'));
-        $client->setRedirectUri(env('GOOGLE_APP_URI'));
-        $client->addScope('https://www.googleapis.com/auth/userinfo.profile');
+        $client->setRedirectUri((string)env('GOOGLE_APP_URI'));
+        $client->addScope(\Google_Service_Oauth2::USERINFO_EMAIL);
+        $client->addScope(\Google_Service_Oauth2::USERINFO_PROFILE);
         $client->setAccessType('offline');
         $client->setIncludeGrantedScopes(true);
         $client->setPrompt('select_account');
@@ -221,14 +223,17 @@ class AccountController extends Controller
     }
 
     public function google_callback(Google_Client $client)
-    {   
+    {
         $client->setClientId(env('GOOGLE_APP_ID'));
         $client->setClientSecret(env('GOOGLE_APP_SECRET'));
-        $client->setRedirectUri(env('GOOGLE_APP_URI'));
-        $client->addScope('https://www.googleapis.com/auth/userinfo.profile');
+        $client->setRedirectUri((string)env('GOOGLE_APP_URI'));
+        $client->addScope(\Google_Service_Oauth2::USERINFO_EMAIL);
+        $client->addScope(\Google_Service_Oauth2::USERINFO_PROFILE);
         $token = $client->fetchAccessTokenWithAuthCode($_GET['code']);
-        //dd($token);
-        $token = $token['access_token'];
+        if(isset($token['error'])){
+            return redirect('/account/login/google');
+        }
+        $token = $token['id_token'];
         if(!empty($token)){
             $device_id = env('DEVICE_ID');
             $client = new Client([
@@ -245,13 +250,18 @@ class AccountController extends Controller
             ]]);
 
             $res = json_decode($res->getBody()->getContents(),true);
-            dd($res);
+            session(['email' => $res['userAccount'][0]['email']]);
+            session(['account_id' => $res['userAccount'][0]['id']]);
+            if( $res['code'] == 1)
+                session(['token' => $res['auth']['session']['token']]);
+
+            return redirect('/account');
         }
     }
 
     public function facebook_redirect(){
 
-        return Socialite::driver('facebook')->redirect();
+        return Socialite::with('facebook')->redirect();
 
     }
 
@@ -260,7 +270,6 @@ class AccountController extends Controller
 
         $user = Socialite::driver('facebook')->user();
         $token = $user->token;
-        dd($user);
         if(!empty($token)){
             $device_id = env('DEVICE_ID');
             $client = new Client([
@@ -272,12 +281,15 @@ class AccountController extends Controller
                 'version'       => '3.34',
                 'agent'         => env('API_AGENT','testagent'),
                 'token'         => $token,
-                'format'        => 'json'
+                'format'        => 'json',
+                'auth-provider' => 'facebook-palladium'
             ]]);
 
             $res = json_decode($res->getBody()->getContents(),true);
+            if( $res['code'] == 1)
+                session(['token' => $res['auth']['session']['token'], 'email' => $res['userAccount'][0]['email'], 'account_id' => $res['userAccount'][0]['id']]);
 
-            dd($res);
+            return redirect('/account');
         }
 
     }

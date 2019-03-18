@@ -303,9 +303,43 @@
 
    <div class="siteby">
    		<div class="text-center">
-   			<a href="https://unitspace.top/">Разработка сайтов Unit Space</a>
+   			<a href="https://unitspace.top/">Разработка и создание сайтов Unit Space</a>
    		</div>
    </div>
+	
+	<div id="vip-call-me" class="white-popup-block mfp-hide">
+		<div class="popup-heading">
+			<h4>Перезвоните мне</h4>
+			<a href="#" class="close-director-popup"><img src="{{ asset('img/close-popup.png') }}" alt=""></a>
+		</div>
+		<div class="popup-form">
+			<form id="vip-call-form">
+				<div class="row">
+					<div class="col-sm-12 col-md-6">
+						<label>Ваше имя *</label>
+						<input type="text">
+					</div>
+					<div class="col-sm-12 col-md-6">
+						<label>Номер телефона *</label>
+						<input type="text" placeholder="+38 (0xx) xxx xx xx" id="vip-call-form-phone">
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<button><a href="#vip-thanks" class="send-call-request">Отправить</a></button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<div id="vip-thanks" class="white-popup-block mfp-hide">
+		<a href="#" class="close-director-popup"><img src="{{ asset('img/close-popup.png') }}" alt=""></a>
+		<div class="thanks-block">
+			<p>Спасибо!</p>
+			<span>В течении 20 минус с Вами свяжется наш менеджер</span>
+		</div>
+	</div>
 
 	<div class="telegram-cashier-fixed d-sm-flex d-md-none justify-content-center align-items-center">
 		<img class="cashier-arrow" src="{{ asset('img/cashier-arrow-up.png') }}" alt="">

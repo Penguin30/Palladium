@@ -19,7 +19,10 @@ class ShowTimesController extends Controller
             'theater'		=> env('API_THEATER','palladium'),
             'format'        => 'json'
         ]]);
-        $res = json_decode($res->getBody()->getContents(),true);        
+        $res = json_decode($res->getBody()->getContents(),true);  
+        if($res['code'] != 1){
+            return redirect('/404');
+        }      
         $hall = $client->get('/hall-scheme',['query' => [
             'showtime'		=> $showtime_id,
             'agent'         => env('API_AGENT','testagent'),
@@ -80,22 +83,14 @@ class ShowTimesController extends Controller
             'base_uri'  => 'https://api.vkino.com.ua',
             'auth'      => [env('API_LOGIN', 'testagent'), env('API_PASS', 'testagent')]
         ]);
-        $payee = $client->get('/sale/payment-methods',['query' => [
-            'theater'       => env('API_THEATER','palladium'),
-            'agent'         => env('API_AGENT','testagent'),
-            'showtime'      => $showtime_id,
-            'format'        => 'json'
-        ]]);
-        $payee = json_decode($payee->getBody()->getContents(),true);
-        
+
         if($request->p_type == 'card')
             $payment_type = 'vkino-wayforpay-ticketservice';
         else
             $payment_type = 'palladium-bonus';
-
-        $user = $auth->where('email',session('email'))->get();
-        $user = $user[0];
-
+        
+        $payment_type = 'vkino-liqpay3';
+        
 
         $res=$client->get('/sale',['query' => [
             'theater'       => env('API_THEATER','palladium'),
@@ -109,6 +104,9 @@ class ShowTimesController extends Controller
             'format'        => 'json'
         ]]);
         $res = json_decode($res->getBody()->getContents(),true);
+        
+        if($res['code'] != 1)
+            return redirect($request->server('HTTP_REFERER'));
 
         $arr = array(
             'title' => '',

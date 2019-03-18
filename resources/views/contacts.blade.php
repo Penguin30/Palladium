@@ -23,6 +23,7 @@
 	<meta name="format-detection" content="telephone=no">
 
 	<link rel="stylesheet" href="{{ asset('css/main.min.css') }}">
+	<link rel="stylesheet" href="{{ asset('css/custom.css') }}">
 </head>
 <body class="contacts-custom">
     
@@ -232,6 +233,15 @@
                     </div>
                 </div>
                 <div class="col-12 col-sm-12 col-md-7 col-lg-8 col-xl-8 wow fadeInRightBig">
+                	@if (count($errors) > 0)
+					  <div class="alert alert-danger">
+					    <ul>
+					      @foreach ($errors->all() as $error)
+					        <li>{{ $error }}</li>
+					      @endforeach
+					    </ul>
+					  </div>
+					@endif
                     <form action="/form-feedback" method="POST">
                     	@csrf
                     	<div class="form-group">
@@ -245,10 +255,10 @@
 	                                <input name="email" type="email" class="form-control" id="yourEmail" placeholder="">
 	                            </div> 
                             </div>
-                        </div>                       
+                        </div>                          
                         <div class="form-group">
                             <label for="yourMessage">Сообщение *</label>
-                            <textarea name="msg" class="form-control" id="yourMessage"></textarea>
+                            <textarea name="msg" class="form-control" id="yourMessage" minlength="6"></textarea>
                         </div>
                         <div class="row">
                             <div class="col-12 col-sm-12 col-md-12 col-lg-6">

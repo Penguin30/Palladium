@@ -4,7 +4,7 @@
 <div class="fix-overflow-all">			
 	<section class="payment payment-seats">
 		<div class="container">
-			<a href="/showtime/{{ $showtime['showtime']['']['id'] }}" class="get-back"><img src="{{ asset('img/arrow-back.png') }}" alt="">Назад</a>
+			<a href="/account" class="get-back"><img src="{{ asset('img/arrow-back.png') }}" alt="">Назад</a>
 			<div class="payment-details payment-way">
 				<div class="row">
 					<div class="col-sm-6">
@@ -71,7 +71,7 @@
 							    	</div>
 							    	<div class="tab_content">
 							        	<div class="tab_item">
-											<form action="/showtime/pay/{{ $showtime['showtime']['']['id'] }}" id="pay_card_form" method="POST">
+											<form action="/order/pay/{{ $order_id }}" id="pay_card_form" method="POST">
 												<input name="p_type" type="hidden" value="card">
 												@csrf
 												<label for="email">Почта для получения билетов*</label>
@@ -86,7 +86,7 @@
 											</form> 			
 								        </div>
 								        <div class="tab_item">
-											<form action="/showtime/pay/{{ $showtime['showtime']['']['id'] }}" method="post">
+											<form action="/order/pay/{{ $order_id }}" method="post">
 												@csrf
 											  	<input name="p_type" type="hidden" value="bonus">
 												<label>Почта для получения билетов*</label>
@@ -148,8 +148,8 @@
 									<span>Или</span>
 								</div>
 								<div class="social-auth">
-									<a href="/account/login/facebook" class="fb-a"><img src="{{ asset('img/facebook-aut.png') }}" alt="">Facebook</a>
-									<a href="/account/login/google" class="g-plus"><img src="{{ asset('img/g-plus-aut.png') }}" alt="">Google</a>
+									<a href="#" class="fb-a"><img src="{{ asset('img/facebook-aut.png') }}" alt="">Facebook</a>
+									<a href="#" class="g-plus"><img src="{{ asset('img/g-plus-aut.png') }}" alt="">Google</a>
 								</div>
 							</div>						
 						</div> 

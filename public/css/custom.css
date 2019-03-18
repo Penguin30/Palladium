@@ -1,3 +1,713 @@
 .invalid-feedback{
 	display: block;
 }
+
+.contacts-custom form .form-control {
+	box-shadow: none
+}
+
+
+@media screen and (max-width: 4001px) {
+	.shedule-wrapper {
+		padding-bottom: 50px;
+	}
+	
+	.availible-shedule .soon {
+		padding-bottom: 113px;
+	}
+	
+	.shedule-template.soon {
+		padding-bottom: 88px;
+	}
+	
+	.about-movie .video .current-film img {
+		width: 70px;
+	}
+	
+	.contacts .contacts-list {
+		top: 61px;
+		left: -16px;
+		line-height: 29px;
+	}
+	
+	.contacts .contacts-phones {
+		top: 71px;
+	}
+	
+	.contacts .time-working {
+		top: 45px;
+	}
+	
+	.contacts .contacts-social {
+		top: 58px;
+	}
+	
+	.contacts #palladium-location {
+		top: 30px;
+		width: 41.5vw;
+	}
+	
+	.contacts {
+		margin-bottom: 195px;
+	}
+	
+	.ft-feedback {
+		padding-bottom: 101px;
+	}
+	
+	.ft-feedback form {
+		margin-top: 5.5rem;
+	}
+	
+	.contacts-custom form input#yourName {
+		margin-bottom: 18px;
+		padding-bottom: 31px;
+	}
+	
+	.contacts-custom form input[type=email] {
+		padding-bottom: 30px;
+	}
+	
+	.contacts-custom form textarea {
+		padding-bottom: 85px;
+		margin-bottom: 31px;
+	}
+	
+	.ft-feedback .ft-socials h5 {
+		margin-bottom: 1.5em;
+	}
+	
+	.error-section .container-for-image-error .block-error h1+p {
+		margin-bottom: 2.23rem;	
+	}
+	
+	.error-section .container-for-image-error .block-error .page-undefined {
+		margin-bottom: 4.5rem;
+	}
+	
+	.error-section+.container+footer {
+		padding-bottom: 65px;
+	}
+	
+	.error-section+.container+footer h5 {
+		margin-bottom: 17px;
+	}
+	
+	.error-section+.container+footer .content {
+		padding-left: 14px;
+	}
+	
+	.error-section+.container+footer .write-to-director .content {
+		padding-left: 0;
+	}
+	
+	.error-section+.container+footer .write-to-director {
+		padding-left: 34px;
+	}
+	
+	.error-section+.container+footer .write-to-director .button-empty {
+		padding: 14px 23px;
+		left: 16px;
+	}
+	
+	.error-section .container-for-image-error .block-error .button-empty {
+		letter-spacing: .5px;
+		margin-left: 24px;
+	}
+	
+	.bottom-section-news .news-block {
+		margin-bottom: 8rem;
+	}
+	
+	.bottom-section-news {
+		padding-bottom: 52px;
+	}
+	
+	.bottom-section-news + footer {
+		padding: 80px 0;
+		padding-bottom: 72px;
+	}
+	
+	.bottom-section-news + footer>.container {
+		width: 79vw;
+	}
+	
+	.bottom-section-news + footer .content {
+		padding-left: 14px;
+		padding-top: 23px;
+	}
+	
+	.bottom-section-news + footer .write-to-director {
+		padding-left: 20px;
+	}
+	
+	.bottom-section-news + footer .write-to-director .button-filled {
+		top: 8px;
+	}
+	
+	.bottom-section-news + footer .write-to-director .button-empty {
+		top: 8px;
+		padding: 12.5px 1.4vw;
+		padding-left: 1vw;
+		letter-spacing: 1.3px;
+	}
+	
+	.bottom-section-news + footer .content h5 {
+		margin-bottom: 10px;
+	}
+	
+	.about-movie .video .current-film {
+		height: 70px;
+	}
+	
+	.popup-menu .popup-right-menu .unathorized-menu .social-icons {
+		margin-top: 64px!important;
+	}
+	
+}
+
+
+@media screen and (max-width: 1024px) {
+	.fix-home .slider-home .slide__description h2 {
+		left: 22.75px;
+	}
+	
+	.fix-home .slider-home .slide__description .today {
+		left: 2.219vw;
+	}
+	
+	.fix-home .slider-home .slide__description .other-dates {
+		left: 26.4px;
+	}
+	
+	.fix-home .slider-home .slide__description .availible-sessions {
+		left: 2.219vw;
+	}
+	
+	.fix-home+.actions+.soon {
+		padding-bottom: 59px!important;
+	}
+	
+	.fix-home+.actions+.soon .slider-soon-wrapper h4 {
+		margin-bottom: 15px;
+	}
+	
+	.palladium-club h2 {
+		margin-bottom: 3.9rem;
+	}
+	
+	.fix-home+.actions+.soon+.palladium-club+.about-cinema .cinema-text {
+		margin-bottom: 3.7rem;
+	}
+	
+	.palladium-club .gold-card {
+		margin-bottom: 49px;
+	}
+	
+	.fix-home+.actions+.soon+.palladium-club {
+		padding-bottom: 127px;
+	}
+	
+	.slider-home {
+		top: 22px;
+	}
+	
+	.availible-shedule {
+		margin-bottom: 0;
+		padding-bottom: 76px;
+	}
+	
+	.shedule-wrapper {
+		padding-bottom: 21px;
+	}
+	
+	.shedule-template.soon {
+		padding-bottom: 125px;
+	}
+	
+	.about-movie+footer .write-to-director .button-empty {
+		top: -11px;
+	}
+	
+	.contacts {
+		margin-bottom: 119px;
+	}
+	
+	.contacts .contacts-list {
+		top: 10px;
+		left: 0;
+	}
+	
+	.contacts .contacts-phones {
+		top: 24px;
+	}
+	
+	.contacts .time-working {
+		top: -1px;
+	}
+	
+	.contacts .contacts-social {
+		top: 20px;
+	}
+	
+	.contacts-custom form textarea {
+		padding-bottom: 49px;
+	}
+	
+	footer.ft-feedback {
+		padding-bottom: 99px;
+	}
+	
+	
+	.contacts #palladium-location {
+		top: 9px;
+		width: 59.5vw;
+	}
+	
+	.fix-error-column {
+		height: 570px;
+	}
+	
+	.error-section .container-for-image-error {
+		height: 102%;
+		top: -10px;
+	}
+	
+	.error-section .container-for-image-error .block-error h1+p {
+		margin-bottom: 1.6rem;
+	}
+	
+	.error-section .container-for-image-error .block-error .button-empty {
+		left: 1px;
+		padding-right: 14px;
+	}
+	
+	.error-section .container-for-image-error .block-error .button-empty span {
+		top: -1px !important;
+		left: 3px!important;
+	}
+	
+	.error-section .container-for-image-error .block-error p.page-undefined {
+		margin-bottom: 4.3rem;
+		letter-spacing: 2.3px;
+	}
+	
+	.error-section {
+		margin-bottom: 79px;
+	}
+	
+	.error-section+.container+footer .container {
+		width: 100%;
+	}
+	
+	.error-section+.container+footer {
+		padding-top: 102px;
+		padding-bottom: 75px;
+	}
+	
+	.error-section+.container+footer span {
+		margin-left: 0;
+		margin-bottom: 27px;
+	}
+	
+	.error-section+.container+footer .write-to-director {
+		padding-left: 0px;
+	}
+	
+	.error-section+.container+footer .write-to-director h5 {
+		margin-bottom: 14px;
+	}
+	
+	.error-section+.container+footer h5 {
+		margin-bottom: 14px;
+	}
+	
+	.error-section+.container+footer .content {
+		padding-left: 29px!important;
+	}
+	
+	.error-section+.container+footer .write-to-director .button-filled {
+		top: 8px;
+	}
+	
+	.error-section+.container+footer .write-to-director .button-empty {
+		top: 7px;
+		left: 1px;
+		padding: 15px 23px;
+	}
+	
+	.top-section-news {
+		height: 384px;
+	}
+	
+	.bottom-section-news {
+		top: 0;
+	}
+	
+	.bottom-section-news .container > .row.news-block:nth-child(1) {
+		margin-bottom: 6rem;
+	}	
+	.bottom-section-news .container > .row.news-block:nth-child(2) {
+		margin-bottom: 14rem;
+	}	
+	.bottom-section-news .container > .row.news-block:nth-child(3) {
+		margin-bottom: 6rem;
+	}	
+	.bottom-section-news .container > .row.news-block:nth-child(4) {
+		margin-bottom: 14rem;
+	}
+	.bottom-section-news {
+		padding-bottom: 22px;
+	}
+	
+	.bottom-section-news + footer {
+		padding-bottom: 71px;
+	}
+	
+	.bottom-section-news + footer>.container {
+		width: 94vw;
+	}
+	
+	.bottom-section-news+footer .content span {
+		margin-top: 0;
+		margin-left: 18px;
+	}
+	
+	.bottom-section-news+footer .content h5 {
+		margin-top: 0;
+	}
+	
+	.bottom-section-news+footer .write-to-director .content h5 {
+		margin-left: 0;
+		margin-bottom: 14px;
+	}
+	
+	.bottom-section-news+footer .content span {
+		margin-bottom: 30px;
+	}
+	
+	.bottom-section-news + footer .write-to-director .content {
+		padding-left: 8px;
+		padding-top: 27px;
+	}
+	
+	.bottom-section-news + footer .write-to-director .content span {
+		margin-left: 0;
+	}
+	
+	.bottom-section-news + footer .write-to-director .button-empty {
+		padding-left: 19px;
+		padding-right: 28px;
+		left: 2px;
+		top: 5px;
+	}
+	
+	.bottom-section-news + footer .write-to-director .button-filled {
+		top: 5px;
+		padding: 15px 31px;
+	}
+	
+	.about-movie .sessions-time+p {
+		margin-bottom: 16rem;
+	}
+	
+	.popup-menu .popup-right-menu .unathorized-menu .authorize {
+		margin-bottom: 50px;
+	}
+	
+}
+
+
+@media screen and (max-width: 991.98px) {
+	
+	.fix-home .slider-home .slide .slide__description h2 {
+		top: -91px;
+	}
+	
+	.slider-home {
+		margin-top: 84px;	
+	}
+	
+	.palladium-club h2 {
+		font-size: 2.5rem;
+	}
+	
+	.fix-home+.actions {
+		padding-bottom: 102px;
+	}
+	
+	.fix-home+.actions .actions-item {
+		top: -2px;
+	}
+	
+	.fix-home+.actions+.soon {
+		padding-bottom: 57px!important;
+	}
+	
+	.fix-home+.actions+.soon+.palladium-club h2 {
+		top: 28px;
+	}
+	
+	.palladium-club .cards .card-item {
+		margin-bottom: 36px;
+	}
+	
+	.fix-home+.actions+.soon+.palladium-club {
+		padding-bottom: 121px;
+	}
+	
+	.fix-home+.actions+.soon+.palladium-club+.about-cinema {
+		padding-bottom: 32px;
+	}
+	
+		
+	.shedule-wrapper {
+		padding-bottom: 28px;
+	}
+	
+	.availible-shedule .soon {
+		padding-bottom: 75px;
+	}
+	
+	.shedule-template.soon {
+		padding-bottom: 90px;
+	}
+	
+	.contacts {
+		margin-bottom: 151px;
+	}
+	
+	.contacts .contacts-list {
+		top: 21px;
+	}
+	
+	.contacts .contacts-list>.item-contacts-list {
+		width: 35vw;
+		line-height: 30px;
+	}
+	
+	.contacts .contacts-phones {
+		top: 22px;
+	}
+	
+	.contacts .time-working {
+		top: -14px;
+	}
+	
+	.contacts .contacts-social {
+		top: 0;
+	}
+	
+	.ft-feedback .ft-socials {
+		margin-top: -8px;
+	}
+	
+	.ft-feedback .ft-socials h5 {
+		margin-bottom: 3rem;
+	}
+	
+	.ft-feedback form {
+		margin-top: 4.5rem;
+	}
+	
+	footer.ft-feedback form input#yourName {
+		margin-bottom: 19px;
+		padding-bottom: 29px;
+	}
+	
+	footer.ft-feedback form input#yourEmail, footer.ft-feedback form input#yourNumber {
+		padding-bottom: 29px;
+	}
+	
+	footer.ft-feedback form textarea#yourMessage {
+		padding-bottom: 59px;
+		margin-bottom: 121px;
+	}
+	
+	footer.ft-feedback {
+		padding-bottom: 60px;
+	}
+	
+	.contacts #palladium-location {
+		top: 11px;
+		width: 50.5vw;
+	}
+	
+	.error-section {
+		margin-bottom: 38px;
+	}
+	
+	.error-section .container-for-image-error {
+		left: 0px;
+		max-width: 141%;
+		height: 91%;
+	}
+	
+	.error-section .container-for-image-error .block-error .button-empty {
+		left: 1px;
+		padding-right: 21px;
+		top: -8px;
+		margin-left: 0;
+	}
+	
+	.error-section .container-for-image-error .block-error .button-empty span {
+		top: 1px !important;
+		left: 10px!important;
+	}
+	
+	.error-section .container-for-image-error img {
+		left: -152px;
+		max-width: 139%;
+	}
+	
+	.error-section .container-for-image-error .block-error p.page-undefined {
+		margin-top: 15px;
+		margin-left: 7px;
+	}
+	
+	.error-section+.container+footer+.footer-mobile.footer-mobile-all-pages-fix.additional-class.additional-class1.additional-class2.additional-class3.additional-class4 .contact-us-part {
+		padding-bottom: 65px;
+	}
+	
+	.error-section+.container+footer+.footer-mobile.footer-mobile-all-pages-fix.additional-class.additional-class1.additional-class2.additional-class3.additional-class4 .contact-us-part.bg-map {
+		padding-bottom: 75px;
+	}
+	
+	.top-section-news {
+		height: 239px;
+	}
+	
+	.bottom-section-news {
+		margin-bottom: 0;
+		padding-top: 203px;
+		padding-bottom: 0px;
+	}
+	
+	.bottom-section-news .news-block.fix-news-first-row {
+		height: 308px;
+	}
+	
+	.bottom-section-news .news-block.fix-news-first-row h1 {
+		font-size: 23px;
+		letter-spacing: .4px;
+		margin-left: 9px;
+		padding-right: 0;
+	}
+	
+	.fix-news-first-row {
+		margin-top: -77px;
+		margin-left: -15px;
+		margin-right: -15px;
+	}
+	
+	.bottom-section-news .news-block.fix-news-first-row p {
+		margin-left: 10px;
+	}
+	
+	.bottom-section-news+footer+.footer-mobile .contact-us-part {
+		padding: 59px 0px;
+	}
+	
+	.bottom-section-news+footer+.footer-mobile .contact-us-part.bg-map {
+		padding-bottom: 72px;
+	}
+	
+	.about-movie .video .current-film {
+		height: 65px;
+		top: 41%;
+	}
+	
+	.about-movie .video .play-button img {
+		width: 65px!important;
+	}
+	
+}
+
+@media screen and (max-width: 767.98px) {
+	.slider-home {
+		margin-top: 90px;
+	}
+	
+	.fix-home .slider-home .slick-slide .slide .slide__description h2 {
+		top: -13.172vw;
+	}
+	
+	.fix-home+.actions .actions-item {
+		top: -8px;
+	}
+	
+	.fix-home+.actions {
+		padding-bottom: 62px;
+	}
+	
+	.fix-home+.actions+.soon {
+		padding-bottom: 69px!important;
+	}
+	
+	.fix-home+.actions+.soon+.palladium-club+.about-cinema {
+		padding-bottom: 17px;
+	}
+	
+	.shedule-wrapper {
+		padding-bottom: 37px;
+	}
+	
+	.availible-shedule {
+		padding-bottom: 97px;
+	}
+	
+	.shedule-template.soon .slider-soon-wrapper h4 {
+		top: -59px;
+		left: 45px;
+		font-size: 27px;
+		line-height: 35px;
+		letter-spacing: .5px;
+	}
+	
+	.shedule-template.soon .slider-soon {
+		margin-top: -18px;
+	}
+	
+	.contacts {
+		margin-bottom: 27px;
+	}
+	
+	.contacts .container #palladium-location {
+		height: 316px;	
+	}
+	
+	.error-section {
+		margin-bottom: 12px;
+	}
+	
+	.error-section .fix-error-column {
+		height: 85.9vw;
+	}
+	
+	.error-section .fix-error-column .container-for-image-error {
+		width: 80vw;
+	}
+	
+	.error-section .fix-error-column .container-for-image-error img {
+		height: 100%;
+	}
+	
+	.error-section .fix-error-column .container-for-image-error .block-error {
+		top: 49%;
+	}
+	
+	.about-movie .video .current-film {
+		height: 90px;
+		top: 53%;
+	}
+	
+	.about-movie .video .play-button img {
+		width: 90px!important;
+	}
+	
+	.popup-menu .popup-right-menu .unathorized-menu .authorize {
+		padding: 7.465vw 7.292vw;
+		margin-bottom: 19px;
+	}
+	
+}
